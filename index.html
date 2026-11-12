@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Магазин Apple</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0d1117;--card:#161b24;--line:#232b38;--text:#eef2f7;--mute:#8b96a7;--a1:#2de2a6;--a2:#7b6cf6;--grad:linear-gradient(90deg,var(--a1),var(--a2));}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,"SF Pro Text",Inter,Roboto,sans-serif;padding-bottom:96px}
+header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(13,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:22px;background:var(--grad);-webkit-background-clip:text;color:transparent}
+.pvz{border:1px dashed var(--a1);border-radius:14px;padding:6px 12px;font-size:12px;color:var(--mute);cursor:pointer;text-align:left}
+.pvz b{display:block;color:var(--a1);font-size:14px}
+main{padding:16px}
+h2{font-size:26px;margin:8px 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cat{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 10px;text-align:center;font-weight:600;cursor:pointer}
+.cat span{display:block;font-size:44px;margin-bottom:8px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row small{color:var(--mute);display:block}
+.price{font-weight:700;white-space:nowrap}
+.btn{background:var(--grad);color:#06130e;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
+.btn.sm{width:auto;padding:8px 14px;margin-top:6px}
+.back{background:none;border:0;color:var(--a1);font-size:15px;margin-bottom:8px;cursor:pointer}
+.badge{display:inline-block;background:var(--grad);color:#06130e;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700}
+.note{border:1px solid var(--a1);border-radius:16px;padding:12px;color:var(--mute);font-size:14px;margin-bottom:14px}
+.big{font-size:56px;font-weight:800}
+nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:6px}
+nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;border-radius:20px;font-size:12px;cursor:pointer}
+nav button i{display:block;font-style:normal;font-size:20px}
+nav button.on{background:#1f2a3a;color:var(--a1)}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:9}
+.sheet.show{display:flex}
+.sheet div{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:20px;max-height:70vh;overflow:auto}
+textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" id="brand">МАГАЗИН</div>
+  <div class="pvz" id="pvz"><span>Пункт выдачи</span><b id="pvzName">Не выбран</b></div>
+</header>
+<main id="view"></main>
+<nav id="nav"></nav>
+<div class="sheet" id="sheet"><div id="sheetBody"></div></div>
+
+<script>
+// ====== НАСТРОЙКИ: меняйте под себя ======
+const BRAND = "МАГАЗИН";
+const API = "";   // адрес вашего backend, например "https://api.example.kz". Пусто = демо-данные
+const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Бишкек","Ташкент","Минск"];
+
+// Демо-данные. В бою — загружайте с вашего API: GET /api/catalog
+const CATALOG = {
+  "iPhone":  {icon:"📱", items:[{n:"iPhone 17 256 ГБ",p:520000},{n:"iPhone 17 Pro 256 ГБ",p:690000},{n:"iPhone 16 128 ГБ",p:410000}]},
+  "iPad":    {icon:"🗂️", items:[{n:"iPad Air 11\" 128 ГБ",p:340000},{n:"iPad 10 64 ГБ",p:215000}]},
+  "Watch":   {icon:"⌚", items:[{n:"Apple Watch Series 11 42 мм",p:230000},{n:"Apple Watch SE 44 мм",p:150000}]},
+  "AirPods": {icon:"🎧", items:[{n:"AirPods Pro 3",p:135000},{n:"AirPods 4",p:80000}]},
+  "Mac":     {icon:"💻", items:[{n:"MacBook Air 13\" M4 256 ГБ",p:570000}]},
+  "Аксессуары":{icon:"🔌", items:[{n:"Зарядка MagSafe",p:25000}]}
+};
+const REVIEWS = [{name:"Айдос",date:"06.11.2026",stars:5,text:"Привезли в срок, всё оригинал. Рекомендую."}];
+const FAQ = [["Как оплатить?","Опишите способы оплаты вашего магазина."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантийные условия."]];
+// ==========================================
+
+const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
+const user = tg?.initDataUnsafe?.user || {id:0,first_name:"Гость",username:"guest"};
+const $ = s => document.querySelector(s);
+const money = n => n.toLocaleString("ru-RU")+" ₸";
+const store = (k,v) => { try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null } };
+let orders = store("orders") || [];
+let pvz = store("pvz") || null;
+let tab = "catalog", cat = null;
+
+$("#brand").textContent = BRAND;
+const TABS = [["catalog","▦","Каталог"],["orders","📦","Заказы"],["reviews","★","Отзывы"],["profile","👤","Профиль"]];
+function drawNav(){ $("#nav").innerHTML = TABS.map(([k,i,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${t}</button>`).join(""); }
+function go(t){ tab=t; cat=null; render(); }
+function drawPvz(){ $("#pvzName").textContent = pvz || "Не выбран"; }
+
+function openSheet(html){ $("#sheetBody").innerHTML = html; $("#sheet").classList.add("show"); }
+function closeSheet(){ $("#sheet").classList.remove("show"); }
+$("#sheet").addEventListener("click", e => { if(e.target.id==="sheet") closeSheet(); });
+$("#pvz").onclick = () => openSheet("<h2>Ваш город и ПВЗ</h2>"+CITIES.map(c=>`<div class="row" onclick="setPvz('${c}')">${c}</div>`).join(""));
+function setPvz(c){ pvz=c; store("pvz",pvz); drawPvz(); closeSheet(); }
+
+function buy(c,i){
+  if(!pvz){ $("#pvz").click(); return; }
+  const it = CATALOG[c].items[i];
+  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name:it.n, price:it.p, status:"Ожидает подтверждения", city:pvz};
+  orders.unshift(o); store("orders",orders);
+  // Бот получит заказ (web_app_data) и передаст менеджеру. В бою — POST на ваш API.
+  if(tg?.sendData) { try{ tg.sendData(JSON.stringify(o)); }catch(e){} }
+  tg?.HapticFeedback?.notificationOccurred("success");
+  go("orders");
+}
+
+function renderCatalog(){
+  if(!cat) return `<h2>Каталог</h2><div class="grid">${Object.keys(CATALOG).map(k=>`<div class="cat" onclick="cat='${k}';render()"><span>${CATALOG[k].icon}</span>${k}</div>`).join("")}</div>`;
+  return `<button class="back" onclick="cat=null;render()">‹ Назад</button><h2>${cat}</h2>`+
+    CATALOG[cat].items.map((it,i)=>`<div class="row"><div>${it.n}<div class="price">${money(it.p)}</div></div><button class="btn sm" onclick="buy('${cat}',${i})">Заказать</button></div>`).join("");
+}
+function renderOrders(){
+  if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет. Выберите товар в каталоге.</div>`;
+  return `<h2>История заказов</h2>`+orders.map(o=>`<div class="row"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${o.city}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
+}
+function renderReviews(){
+  const avg = REVIEWS.reduce((s,r)=>s+r.stars,0)/REVIEWS.length;
+  return `<h2>Отзывы</h2><div class="row"><div><div class="big">${avg.toFixed(1)}</div>${"★".repeat(Math.round(avg))}<small>${REVIEWS.length} оценок</small></div></div>
+  <div class="note">Отзывы оставляют только покупатели с выданным заказом. Проверка выполняется на сервере.</div>
+  <button class="btn" onclick="reviewForm()">Оставить отзыв</button><br><br>`+
+  REVIEWS.map(r=>`<div class="row"><div><b>${r.name}</b> <small>${r.date}</small>${"★".repeat(r.stars)}<br>${r.text}</div></div>`).join("");
+}
+function reviewForm(){
+  if(!orders.some(o=>o.status==="Выдан")) return openSheet("<h2>Пока нельзя</h2><p>Отзыв можно оставить после получения заказа.</p>");
+  openSheet(`<h2>Ваш отзыв</h2><textarea id="rt" rows="4" placeholder="Как всё прошло?"></textarea><button class="btn" onclick="closeSheet()">Отправить</button>`);
+}
+function renderProfile(){
+  const link = (t,s,f)=>`<div class="row" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
+  return `<h2>Профиль</h2><div class="row"><div><b>@${user.username||user.first_name}</b><small>ID: ${user.id}</small></div></div>`+
+   link("Техническая поддержка","Нужна помощь? Пишите","tg?.openTelegramLink('https://t.me/ВАШ_АККАУНТ_ПОДДЕРЖКИ')")+
+   link("Частые вопросы","Ответы на вопросы","faq()")+
+   link("Как всё работает","От заказа до получения","how()")+
+   link("Мои адреса ПВЗ","Выбранный город: "+(pvz||"не выбран"),"$('#pvz').click()")+
+   link("Наши гарантии","Условия возврата и гарантии","openSheet('<h2>Гарантии</h2><p>Опишите ваши гарантии.</p>')");
+}
+function faq(){ openSheet("<h2>Частые вопросы</h2>"+FAQ.map(([q,a])=>`<p><b>${q}</b><br>${a}</p>`).join("")); }
+function how(){ openSheet("<h2>Как всё работает</h2><p>1. Выберите товар и город.<br>2. Менеджер подтвердит заказ в Telegram.<br>3. Оплатите удобным способом.<br>4. Получите заказ в пункте выдачи.</p>"); }
+
+function render(){
+  $("#view").innerHTML = {catalog:renderCatalog,orders:renderOrders,reviews:renderReviews,profile:renderProfile}[tab]();
+  drawNav(); drawPvz(); window.scrollTo(0,0);
+}
+render();
+</script>
+</body>
+</html>
