@@ -3,28 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Магазин Apple</title>
+<title>Upgrader</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root{--bg:#0d1117;--card:#161b24;--line:#232b38;--text:#eef2f7;--mute:#8b96a7;--a1:#2de2a6;--a2:#7b6cf6;--grad:linear-gradient(90deg,var(--a1),var(--a2));}
+:root{--bg:#0d1117;--card:#161b24;--line:#232b38;--text:#eef2f7;--mute:#8b96a7;--a1:#2de2a6;--a2:#7b6cf6;--grad:linear-gradient(90deg,var(--a1),var(--a2))}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,"SF Pro Text",Inter,Roboto,sans-serif;padding-bottom:96px}
 header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(13,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .logo{font-weight:800;font-size:22px;background:var(--grad);-webkit-background-clip:text;color:transparent}
-.pvz{border:1px dashed var(--a1);border-radius:14px;padding:6px 12px;font-size:12px;color:var(--mute);cursor:pointer;text-align:left}
+.pvz{border:1px dashed var(--a1);border-radius:14px;padding:6px 12px;font-size:12px;color:var(--mute);cursor:pointer}
 .pvz b{display:block;color:var(--a1);font-size:14px}
 main{padding:16px}
 h2{font-size:26px;margin:8px 0 16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cat{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 10px;text-align:center;font-weight:600;cursor:pointer}
-.cat span{display:block;font-size:44px;margin-bottom:8px}
+.hero{position:relative;overflow:hidden;border:1px solid #2c4a8f;border-radius:24px;padding:14px 10px 12px;text-align:center;font-weight:700;font-size:20px;margin-bottom:14px;background:radial-gradient(80% 130% at 0% 50%,rgba(52,120,255,.5),transparent 62%),radial-gradient(80% 130% at 100% 50%,rgba(52,120,255,.5),transparent 62%),var(--card)}
+.hero small{display:block;color:var(--mute);font-weight:400;font-size:13px}
+.hero svg,.hero img{width:100%;height:auto;display:block;margin-bottom:6px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:6px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer}
+.chip.on{border-color:var(--a1);color:var(--a1)}
+.card{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:12px;margin-bottom:12px}
+.pic{flex:none;width:96px;height:96px;border-radius:14px;background:#0d1117;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:contain}
+.info{flex:1;min-width:0}
+.info small{display:block;color:var(--mute);font-size:13px}
+.price{font-weight:800;font-size:18px}
+s{color:var(--mute);font-size:14px;margin-left:6px}
+.badge{display:inline-block;background:var(--grad);color:#06130e;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-top:4px}
+.btn{background:var(--grad);color:#06130e;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
+.btn.sm{width:auto;padding:8px 16px;margin-top:8px;display:block}
 .row{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .row small{color:var(--mute);display:block}
-.price{font-weight:700;white-space:nowrap}
-.btn{background:var(--grad);color:#06130e;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
-.btn.sm{width:auto;padding:8px 14px;margin-top:6px}
-.back{background:none;border:0;color:var(--a1);font-size:15px;margin-bottom:8px;cursor:pointer}
-.badge{display:inline-block;background:var(--grad);color:#06130e;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700}
 .note{border:1px solid var(--a1);border-radius:16px;padding:12px;color:var(--mute);font-size:14px;margin-bottom:14px}
 .big{font-size:56px;font-weight:800}
 nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:6px}
@@ -38,96 +46,109 @@ textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(
 </style>
 </head>
 <body>
-<header>
-  <div class="logo" id="brand">Upgrader</div>
-  <div class="pvz" id="pvz"><span>Пункт выдачи</span><b id="pvzName">Не выбран</b></div>
-</header>
+<header><div class="logo" id="brand"></div><div class="pvz" id="pvz"><span>Пункт выдачи</span><b id="pvzName">Не выбран</b></div></header>
 <main id="view"></main>
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div id="sheetBody"></div></div>
-
 <script>
-// ====== НАСТРОЙКИ: меняйте под себя ======
-const BRAND = "Upgrader";
-const API = "";   // адрес вашего backend, например "https://api.example.kz". Пусто = демо-данные
-const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Бишкек","Ташкент","Минск"];
+// ============ ЭТОТ ФАЙЛ ВЫ МЕНЯЕТЕ ПРИ КАЖДОМ ПОСТУПЛЕНИИ ============
+const BRAND = "Upgrader";                         // название магазина
+const SUPPORT = "https://t.me/xomvape";          // ссылка на менеджера
+const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Павлодар","Костанай"];
 
-// Демо-данные. В бою — загружайте с вашего API: GET /api/catalog
-const CATALOG = {
-  "iPhone":  {icon:"📱", items:[{n:"iPhone 17 256 ГБ",p:520000},{n:"iPhone 17 Pro 256 ГБ",p:690000},{n:"iPhone 16 128 ГБ",p:410000}]},
-  "iPad":    {icon:"🗂️", items:[{n:"iPad Air 11\" 128 ГБ",p:340000},{n:"iPad 10 64 ГБ",p:215000}]},
-  "Watch":   {icon:"⌚", items:[{n:"Apple Watch Series 11 42 мм",p:230000},{n:"Apple Watch SE 44 мм",p:150000}]},
-  "AirPods": {icon:"🎧", items:[{n:"AirPods Pro 3",p:135000},{n:"AirPods 4",p:80000}]},
-  "Mac":     {icon:"💻", items:[{n:"MacBook Air 13\" M4 256 ГБ",p:570000}]},
-  "Аксессуары":{icon:"🔌", items:[{n:"Зарядка MagSafe",p:25000}]}
-};
-const REVIEWS = [{name:"Айдос",date:"06.11.2026",stars:5,text:"Привезли в срок, всё оригинал. Рекомендую."}];
-const FAQ = [["Как оплатить?","Опишите способы оплаты вашего магазина."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантийные условия."]];
-// ==========================================
+// Один телефон = один блок { ... },. Цены в тенге. Ниже ДЕМО-товары: замените на свои.
+// Поля:
+//   id     уникальный код (латиница, без пробелов)
+//   model  модель, например "iPhone 15 Pro"
+//   mem    память, например "256 ГБ"
+//   color  цвет
+//   cond   состояние: "Идеальное", "Хорошее", "Есть следы использования"
+//   bat    износ батареи в процентах остаётся (необязательно), например 91
+//   price  цена в тенге, числом без пробелов
+//   old    прежняя цена (необязательно; указывайте только если телефон реально продавался дороже)
+//   img    путь к фото, например "photos/iphone15-black.jpg" (необязательно)
+//   split  true, если доступна рассрочка (необязательно)
+//   sold   true, если телефон продан: он исчезнет из каталога (необязательно)
+const PRODUCTS = [
+  {id:"i15-128-blk", model:"iPhone 15",     mem:"128 ГБ", color:"Чёрный",  cond:"Идеальное", bat:92, price:310000, img:"photos/iphone15-black.jpg", split:true},
+  {id:"i14-128-blu", model:"iPhone 14",     mem:"128 ГБ", color:"Синий",   cond:"Хорошее",   bat:88, price:250000, img:"photos/iphone14-blue.jpg",  split:true},
+  {id:"i13-128-mid", model:"iPhone 13",     mem:"128 ГБ", color:"Тёмная ночь", cond:"Хорошее", bat:85, price:185000, img:"photos/iphone13-midnight.jpg"}
+];
+
+const REVIEWS = [];   // реальные отзывы клиентов: {name:"Айдос", date:"06.11.2026", stars:5, text:"..."}
+const GUARANTEE = "Опишите гарантию на телефоны: срок, что входит, условия возврата.";
+const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на б/у телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
-const user = tg?.initDataUnsafe?.user || {id:0,first_name:"Гость",username:"guest"};
+const user = tg?.initDataUnsafe?.user || {id:0,first_name:"Гость"};
 const $ = s => document.querySelector(s);
 const money = n => n.toLocaleString("ru-RU")+" ₸";
 const store = (k,v) => { try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null } };
-let orders = store("orders") || [];
-let pvz = store("pvz") || null;
-let tab = "catalog", cat = null;
+let orders = store("orders") || [], pvz = store("pvz") || null, tab = "catalog", flt = "Все";
+const title = p => `${p.model} ${p.mem} ${p.color}`;
 
 $("#brand").textContent = BRAND;
 const TABS = [["catalog","▦","Каталог"],["orders","📦","Заказы"],["reviews","★","Отзывы"],["profile","👤","Профиль"]];
-function drawNav(){ $("#nav").innerHTML = TABS.map(([k,i,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${t}</button>`).join(""); }
-function go(t){ tab=t; cat=null; render(); }
-function drawPvz(){ $("#pvzName").textContent = pvz || "Не выбран"; }
-
-function openSheet(html){ $("#sheetBody").innerHTML = html; $("#sheet").classList.add("show"); }
-function closeSheet(){ $("#sheet").classList.remove("show"); }
+const drawNav = () => $("#nav").innerHTML = TABS.map(([k,i,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${t}</button>`).join("");
+const go = t => { tab=t; render(); };
+const drawPvz = () => $("#pvzName").textContent = pvz || "Не выбран";
+const openSheet = h => { $("#sheetBody").innerHTML = h; $("#sheet").classList.add("show"); };
+const closeSheet = () => $("#sheet").classList.remove("show");
 $("#sheet").addEventListener("click", e => { if(e.target.id==="sheet") closeSheet(); });
-$("#pvz").onclick = () => openSheet("<h2>Ваш город и ПВЗ</h2>"+CITIES.map(c=>`<div class="row" onclick="setPvz('${c}')">${c}</div>`).join(""));
+$("#pvz").onclick = () => openSheet("<h2>Ваш город</h2>"+CITIES.map(c=>`<div class="row" onclick="setPvz('${c}')">${c}</div>`).join(""));
 function setPvz(c){ pvz=c; store("pvz",pvz); drawPvz(); closeSheet(); }
 
-function buy(c,i){
+function buy(id){
   if(!pvz){ $("#pvz").click(); return; }
-  const it = CATALOG[c].items[i];
-  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name:it.n, price:it.p, status:"Ожидает подтверждения", city:pvz};
+  const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+  const name = `${title(p)} (${p.cond}${p.bat?`, АКБ ${p.bat}%`:""})`;
+  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvz};
   orders.unshift(o); store("orders",orders);
-  // Бот получит заказ (web_app_data) и передаст менеджеру. В бою — POST на ваш API.
-  if(tg?.sendData) { try{ tg.sendData(JSON.stringify(o)); }catch(e){} }
+  try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
   tg?.HapticFeedback?.notificationOccurred("success");
   go("orders");
 }
 
+const PH=[["#d5d8de","#9aa1ad"],["#ff9a4d","#e2681a"],["#41538a","#1c2748"],["#2b2e35","#101216"],["#f3f4f6","#c9ccd3"]];
+function phonesSvg(){
+  const d=PH.map(([a,b],i)=>`<linearGradient id="ph${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`).join("");
+  const r=PH.map((c,i)=>{const x=30+i*50,y=i===2?6:16;return `<rect x="${x}" y="${y}" width="56" height="118" rx="12" fill="url(#ph${i})"/><rect x="${x+5}" y="${y+5}" width="27" height="29" rx="7" fill="rgba(0,0,0,.35)"/><circle cx="${x+13}" cy="${y+13}" r="5" fill="#0b0d10"/><circle cx="${x+24}" cy="${y+13}" r="5" fill="#0b0d10"/><circle cx="${x+18}" cy="${y+25}" r="5" fill="#0b0d10"/>`}).join("");
+  return `<svg viewBox="0 0 316 142" aria-hidden="true"><defs>${d}</defs>${r}</svg>`;
+}
+
 function renderCatalog(){
-  if(!cat) return `<h2>Каталог</h2><div class="grid">${Object.keys(CATALOG).map(k=>`<div class="cat" onclick="cat='${k}';render()"><span>${CATALOG[k].icon}</span>${k}</div>`).join("")}</div>`;
-  return `<button class="back" onclick="cat=null;render()">‹ Назад</button><h2>${cat}</h2>`+
-    CATALOG[cat].items.map((it,i)=>`<div class="row"><div>${it.n}<div class="price">${money(it.p)}</div></div><button class="btn sm" onclick="buy('${cat}',${i})">Заказать</button></div>`).join("");
+  const list = PRODUCTS.filter(p=>!p.sold);
+  const models = ["Все", ...new Set(list.map(p=>p.model))];
+  if(!models.includes(flt)) flt = "Все";
+  const shown = list.filter(p=>flt==="Все"||p.model===flt);
+  const hero = `<div class="hero"><img src="photos/hero.png" alt="" onerror="this.outerHTML=phonesSvg()">iPhone<small>Б/у телефоны в Казахстане</small></div>`;
+  const chips = `<div class="chips">${models.map(m=>`<div class="chip ${m===flt?'on':''}" onclick="flt='${m}';render()">${m}</div>`).join("")}</div>`;
+  const cards = shown.map(p=>`<div class="card"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="this.replaceWith(document.createTextNode('📱'))">`:"📱"}</div><div class="info"><b>${title(p)}</b><small>${p.cond}${p.bat?` · АКБ ${p.bat}%`:""}</small><div><span class="price">${money(p.price)}</span>${p.old?`<s>${money(p.old)}</s>`:""}</div>${p.split?`<span class="badge">Рассрочка</span>`:""}<button class="btn sm" onclick="buy('${p.id}')">Заказать</button></div></div>`).join("");
+  return hero + chips + (cards || `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
 }
 function renderOrders(){
-  if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет. Выберите товар в каталоге.</div>`;
-  return `<h2>История заказов</h2>`+orders.map(o=>`<div class="row"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${o.city}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
+  if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет.</div>`;
+  return `<h2>История заказов</h2>`+orders.map(o=>`<div class="row"><div><b>${o.id}</b><br>${o.name}<small>Город: ${o.city}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
 }
 function renderReviews(){
-  const avg = REVIEWS.reduce((s,r)=>s+r.stars,0)/REVIEWS.length;
-  return `<h2>Отзывы</h2><div class="row"><div><div class="big">${avg.toFixed(1)}</div>${"★".repeat(Math.round(avg))}<small>${REVIEWS.length} оценок</small></div></div>
-  <div class="note">Отзывы оставляют только покупатели с выданным заказом. Проверка выполняется на сервере.</div>
-  <button class="btn" onclick="reviewForm()">Оставить отзыв</button><br><br>`+
-  REVIEWS.map(r=>`<div class="row"><div><b>${r.name}</b> <small>${r.date}</small>${"★".repeat(r.stars)}<br>${r.text}</div></div>`).join("");
+  const head = REVIEWS.length ? `<div class="row"><div><div class="big">${(REVIEWS.reduce((s,r)=>s+r.stars,0)/REVIEWS.length).toFixed(1)}</div><small>${REVIEWS.length} отзывов</small></div></div>` : `<div class="note">Отзывов пока нет. Станьте первым после получения заказа.</div>`;
+  return `<h2>Отзывы</h2>${head}<button class="btn" onclick="reviewForm()">Оставить отзыв</button><br><br>`+REVIEWS.map(r=>`<div class="row"><div><b>${r.name}</b> <small>${r.date}</small>${"★".repeat(r.stars)}<br>${r.text}</div></div>`).join("");
 }
 function reviewForm(){
   if(!orders.some(o=>o.status==="Выдан")) return openSheet("<h2>Пока нельзя</h2><p>Отзыв можно оставить после получения заказа.</p>");
-  openSheet(`<h2>Ваш отзыв</h2><textarea id="rt" rows="4" placeholder="Как всё прошло?"></textarea><button class="btn" onclick="closeSheet()">Отправить</button>`);
+  openSheet(`<h2>Ваш отзыв</h2><textarea rows="4" placeholder="Как всё прошло?"></textarea><button class="btn" onclick="closeSheet()">Отправить</button>`);
 }
 function renderProfile(){
-  const link = (t,s,f)=>`<div class="row" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
-  return `<h2>Профиль</h2><div class="row"><div><b>@${user.username||user.first_name}</b><small>ID: ${user.id}</small></div></div>`+
-   link("Техническая поддержка","Нужна помощь? Пишите","tg?.openTelegramLink('https://t.me/ВАШ_АККАУНТ_ПОДДЕРЖКИ')")+
+  const link=(t,s,f)=>`<div class="row" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
+  return `<h2>Профиль</h2><div class="row"><div><b>${user.username?'@'+user.username:user.first_name}</b><small>ID: ${user.id}</small></div></div>`+
+   link("Поддержка","Нужна помощь? Пишите","tg?.openTelegramLink(SUPPORT)")+
    link("Частые вопросы","Ответы на вопросы","faq()")+
    link("Как всё работает","От заказа до получения","how()")+
-   link("Мои адреса ПВЗ","Выбранный город: "+(pvz||"не выбран"),"$('#pvz').click()")+
-   link("Наши гарантии","Условия возврата и гарантии","openSheet('<h2>Гарантии</h2><p>Опишите ваши гарантии.</p>')");
+   link("Мой город","Сейчас: "+(pvz||"не выбран"),"$('#pvz').click()")+
+   link("Наши гарантии","Условия гарантии и возврата","openSheet('<h2>Гарантии</h2><p>'+GUARANTEE+'</p>')");
 }
 function faq(){ openSheet("<h2>Частые вопросы</h2>"+FAQ.map(([q,a])=>`<p><b>${q}</b><br>${a}</p>`).join("")); }
-function how(){ openSheet("<h2>Как всё работает</h2><p>1. Выберите товар и город.<br>2. Менеджер подтвердит заказ в Telegram.<br>3. Оплатите удобным способом.<br>4. Получите заказ в пункте выдачи.</p>"); }
+function how(){ openSheet("<h2>Как всё работает</h2><p>1. Выберите телефон и город.<br>2. Менеджер подтвердит заказ в Telegram.<br>3. Оплатите удобным способом.<br>4. Получите заказ.</p>"); }
 
 function render(){
   $("#view").innerHTML = {catalog:renderCatalog,orders:renderOrders,reviews:renderReviews,profile:renderProfile}[tab]();
