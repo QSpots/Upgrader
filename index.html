@@ -6,35 +6,41 @@
 <title>Upgrader</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root{--bg:#0d1117;--card:#161b24;--line:#232b38;--text:#eef2f7;--mute:#8b96a7;--a1:#2de2a6;--a2:#7b6cf6;--grad:linear-gradient(90deg,var(--a1),var(--a2))}
+:root{--bg:#070b10;--card:#0e151e;--line:#1a2532;--text:#f2f6fa;--mute:#8da0b5;--a1:#00b4d8;--a2:#0096c7;--grad:linear-gradient(90deg,#00b4d8,#0096c7)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,"SF Pro Text",Inter,Roboto,sans-serif;padding-bottom:96px}
-header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(13,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.logo{font-weight:800;font-size:22px;background:var(--grad);-webkit-background-clip:text;color:transparent}
-.pvz{border:1px dashed var(--a1);border-radius:14px;padding:6px 12px;font-size:12px;color:var(--mute);cursor:pointer}
-.pvz b{display:block;color:var(--a1);font-size:14px}
+header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;background:rgba(7,11,16,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:22px;color:var(--a1)}
+.pvz{border:1px solid var(--a1);border-radius:20px;padding:7px 12px;font-size:12px;color:#fff;cursor:pointer;white-space:nowrap}
+.pvz b{color:#ffb020;font-size:12px}
 main{padding:16px}
 h2{font-size:26px;margin:8px 0 16px}
-.hero{position:relative;overflow:hidden;border:1px solid #2c4a8f;border-radius:24px;padding:14px 10px 12px;text-align:center;font-weight:700;font-size:20px;margin-bottom:14px;background:radial-gradient(80% 130% at 0% 50%,rgba(52,120,255,.5),transparent 62%),radial-gradient(80% 130% at 100% 50%,rgba(52,120,255,.5),transparent 62%),var(--card)}
-.hero small{display:block;color:var(--mute);font-weight:400;font-size:13px}
-.hero svg,.hero img{width:100%;height:auto;display:block;margin-bottom:6px}
-.hero img{max-height:230px;object-fit:contain}
-.hero.photo{color:#111;background:radial-gradient(70% 120% at 0% 50%,rgba(52,120,255,.55),transparent 62%),radial-gradient(70% 120% at 100% 50%,rgba(52,120,255,.55),transparent 62%),#f2f3f5}
-.hero.photo img{mix-blend-mode:multiply}
-.hero.photo small{color:#55606f}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:6px}
+.hh{padding:6px 0 10px}
+.eyebrow{color:var(--a1);font-size:11px;font-weight:700;letter-spacing:.22em;margin-bottom:10px}
+.hh h1{font-size:34px;line-height:1.08;font-weight:800;margin-bottom:12px}
+.hh p{color:var(--mute);font-size:14px;margin-bottom:16px}
+.hbtns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.hbtns .btn{width:auto;padding:12px 18px;border-radius:24px}
+.btn.ghost{background:none;border:1px solid #cfd8e3;color:#fff}
+.hvis{border-radius:24px;overflow:hidden;padding:8px;background:radial-gradient(70% 120% at 0% 50%,rgba(0,180,216,.55),transparent 62%),radial-gradient(70% 120% at 100% 50%,rgba(0,180,216,.55),transparent 62%),#eef1f5}
+.hvis img{display:block;width:100%;max-height:230px;object-fit:contain;mix-blend-mode:multiply}
+.sec{font-size:28px;font-weight:800;margin:22px 0 14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px}
 .chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer}
 .chip.on{border-color:var(--a1);color:var(--a1)}
-.card{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:12px;margin-bottom:12px}
-.pic{flex:none;width:104px;height:104px;border-radius:14px;background:#f2f3f5;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:10px;display:flex;flex-direction:column}
+.pic{display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;background:#eef1f5;border-radius:14px}
+.pc .pic{width:100%;height:150px;margin-bottom:10px}
 .pic img{width:100%;height:100%;object-fit:contain}
-.info{flex:1;min-width:0}
-.info small{display:block;color:var(--mute);font-size:13px}
-.price{font-weight:800;font-size:18px}
-s{color:var(--mute);font-size:14px;margin-left:6px}
-.badge{display:inline-block;background:var(--grad);color:#06130e;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-top:4px}
-.btn{background:var(--grad);color:#06130e;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
-.btn.sm{width:auto;padding:8px 16px;margin-top:8px;display:block}
+.pc b{font-size:15px}
+.pc small{color:var(--mute);font-size:12px;display:block}
+.pc .price{font-size:20px;margin-top:6px}
+.pc .sp{color:var(--a1);font-size:11px;font-weight:600;margin:2px 0 10px}
+.pc .btn{margin-top:auto;border-radius:22px;padding:11px}
+.price{font-weight:800;font-size:18px;white-space:nowrap}
+.badge{display:inline-block;background:var(--grad);color:#04121a;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-top:4px}
+.btn{background:var(--grad);color:#04121a;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
 .row{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .row small{color:var(--mute);display:block}
 .note{border:1px solid var(--a1);border-radius:16px;padding:12px;color:var(--mute);font-size:14px;margin-bottom:14px}
@@ -42,7 +48,7 @@ s{color:var(--mute);font-size:14px;margin-left:6px}
 nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:6px}
 nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;border-radius:20px;font-size:12px;cursor:pointer}
 nav button i{display:block;font-style:normal;font-size:20px}
-nav button.on{background:#1f2a3a;color:var(--a1)}
+nav button.on{background:#0f2a35;color:var(--a1)}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:9}
 .sheet.show{display:flex}
 .sheet div{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:20px;max-height:70vh;overflow:auto}
@@ -50,7 +56,7 @@ textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(
 </style>
 </head>
 <body>
-<header><div class="logo" id="brand"></div><div class="pvz" id="pvz"><span>Пункт выдачи</span><b id="pvzName">Не выбран</b></div></header>
+<header><div class="logo" id="brand"></div><div class="pvz" id="pvz"><span>Пункт выдачи:</span> <b id="pvzName">не выбран</b></div></header>
 <main id="view"></main>
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div id="sheetBody"></div></div>
@@ -61,7 +67,10 @@ const SUPPORT = "https://t.me/xomvape";
 const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Павлодар","Костанай"];
 const RATE = 5.31;        // курс: сколько тенге в 1 рубле (НБ РК, октябрь 2026). Меняйте при изменении курса
 const PHOTO = "photos/";  // папка с фото в репозитории
-const SPLIT = true;       // true = у всех телефонов значок «Рассрочка»
+const SPLIT = true;       // true = у всех телефонов показывается сплит
+const SPLIT_MONTHS = 4;   // на сколько месяцев сплит: платёж в месяц = цена / это число. Укажите ВАШИ реальные условия
+const HERO_TEXT = "Выбери модель, оплати частями и забери в удобном пункте выдачи.";  // можно дописать только правдивые фразы
+const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
 
 // ============ ТОВАРЫ ============
 // Один телефон = одна строка. Цена в РУБЛЯХ, в тенге пересчитывается сама по RATE.
@@ -118,7 +127,7 @@ $("#brand").textContent = BRAND;
 const TABS = [["catalog","▦","Каталог"],["orders","📦","Заказы"],["reviews","★","Отзывы"],["profile","👤","Профиль"]];
 const drawNav = () => $("#nav").innerHTML = TABS.map(([k,i,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${t}</button>`).join("");
 const go = t => { tab=t; render(); };
-const drawPvz = () => $("#pvzName").textContent = pvz || "Не выбран";
+const drawPvz = () => $("#pvzName").textContent = pvz || "не выбран";
 const openSheet = h => { $("#sheetBody").innerHTML = h; $("#sheet").classList.add("show"); };
 const closeSheet = () => $("#sheet").classList.remove("show");
 $("#sheet").addEventListener("click", e => { if(e.target.id==="sheet") closeSheet(); });
@@ -126,6 +135,7 @@ $("#pvz").onclick = () => openSheet("<h2>Ваш город</h2>"+CITIES.map(c=>`
 function setPvz(c){ pvz=c; store("pvz",pvz); drawPvz(); closeSheet(); }
 
 function buy(id){
+  closeSheet();
   if(!pvz){ $("#pvz").click(); return; }
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
   const name = `${title(p)} (${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""})`;
@@ -143,15 +153,21 @@ function phonesSvg(){
   return `<svg viewBox="0 0 316 142" aria-hidden="true"><defs>${d}</defs>${r}</svg>`;
 }
 
+function imgErr(el,src){ if(!el.dataset.t && src.includes("_")){ el.dataset.t=1; el.src=src.replace(/_/g," "); } else el.replaceWith(document.createTextNode("📱")); }
+const monthly = p => Math.ceil(p.price/SPLIT_MONTHS/100)*100;
+function choose(id){
+  const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+  openSheet(`<h2>${p.model}</h2><p>${p.mem} · ${p.color} · ${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""}</p><div class="price" style="margin:10px 0">${money(p.price)}</div>${p.split?`<p style="color:var(--a1)">Сплит: ${money(monthly(p))} / мес</p>`:""}<p style="color:var(--mute);margin:10px 0 14px">Город: ${pvz||"не выбран"}</p><button class="btn" onclick="buy('${p.id}')">Оформить заказ</button>`);
+}
 function renderCatalog(){
   const list = PRODUCTS.filter(p=>!p.sold);
   const models = ["Все", ...new Set(list.map(p=>p.model))];
   if(!models.includes(flt)) flt = "Все";
   const shown = list.filter(p=>flt==="Все"||p.model===flt);
-  const hero = `<div class="hero"><img src="${PHOTO}bio.png" alt="" onload="this.parentNode.classList.add('photo')" onerror="this.outerHTML=phonesSvg()">iPhone<small>Б/у телефоны в Казахстане</small></div>`;
+  const hero = `<section class="hh"><div class="eyebrow">СПЛИТ · Б/У · НОВЫЕ</div><h1>iPhone в сплит и б/у — выбирай и забирай</h1><p>${HERO_TEXT}</p><div class="hbtns"><button class="btn" onclick="$('#cat').scrollIntoView({behavior:'smooth'})">Смотреть каталог</button><button class="btn ghost" onclick="how()">Как работает сплит</button></div><div class="hvis"><img src="${PHOTO}bio.png" alt="" onerror="this.parentNode.remove()"></div></section>`;
   const chips = `<div class="chips">${models.map(m=>`<div class="chip ${m===flt?'on':''}" onclick="flt='${m}';render()">${m}</div>`).join("")}</div>`;
-  const cards = shown.map(p=>`<div class="card"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="this.replaceWith(document.createTextNode('📱'))">`:"📱"}</div><div class="info"><b>${title(p)}</b><small>${p.cond||"Б/у"}${p.bat?` · АКБ ${p.bat}%`:""}</small><div><span class="price">${money(p.price)}</span>${p.old?`<s>${money(p.old)}</s>`:""}</div>${p.split?`<span class="badge">Рассрочка</span>`:""}<button class="btn sm" onclick="buy('${p.id}')">Заказать</button></div></div>`).join("");
-  return hero + chips + (cards || `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
+  const cards = shown.map(p=>`<div class="pc"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="imgErr(this,'${p.img}')">`:"📱"}</div><b>${p.model}</b><small>${p.mem} · ${p.color}</small><small>${p.cond||"Б/у"}${p.bat?` · АКБ ${p.bat}%`:""}</small><div class="price">${money(p.price)}</div>${p.split?`<div class="sp">Сплит: ${money(monthly(p))} / мес</div>`:`<div class="sp">&nbsp;</div>`}<button class="btn" onclick="choose('${p.id}')">Выбрать</button></div>`).join("");
+  return hero + `<div class="sec" id="cat">Каталог</div>` + chips + (cards ? `<div class="grid">${cards}</div>` : `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
 }
 function renderOrders(){
   if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет.</div>`;
@@ -175,7 +191,7 @@ function renderProfile(){
    link("Наши гарантии","Условия гарантии и возврата","openSheet('<h2>Гарантии</h2><p>'+GUARANTEE+'</p>')");
 }
 function faq(){ openSheet("<h2>Частые вопросы</h2>"+FAQ.map(([q,a])=>`<p><b>${q}</b><br>${a}</p>`).join("")); }
-function how(){ openSheet("<h2>Как всё работает</h2><p>1. Выберите телефон и город.<br>2. Менеджер подтвердит заказ в Telegram.<br>3. Оплатите удобным способом.<br>4. Получите заказ.</p>"); }
+function how(){ openSheet("<h2>Как работает сплит</h2><p>"+HOW+"</p>"); }
 
 function render(){
   $("#view").innerHTML = {catalog:renderCatalog,orders:renderOrders,reviews:renderReviews,profile:renderProfile}[tab]();
