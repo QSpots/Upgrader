@@ -18,11 +18,15 @@ h2{font-size:26px;margin:8px 0 16px}
 .hero{position:relative;overflow:hidden;border:1px solid #2c4a8f;border-radius:24px;padding:14px 10px 12px;text-align:center;font-weight:700;font-size:20px;margin-bottom:14px;background:radial-gradient(80% 130% at 0% 50%,rgba(52,120,255,.5),transparent 62%),radial-gradient(80% 130% at 100% 50%,rgba(52,120,255,.5),transparent 62%),var(--card)}
 .hero small{display:block;color:var(--mute);font-weight:400;font-size:13px}
 .hero svg,.hero img{width:100%;height:auto;display:block;margin-bottom:6px}
+.hero img{max-height:230px;object-fit:contain}
+.hero.photo{color:#111;background:radial-gradient(70% 120% at 0% 50%,rgba(52,120,255,.55),transparent 62%),radial-gradient(70% 120% at 100% 50%,rgba(52,120,255,.55),transparent 62%),#f2f3f5}
+.hero.photo img{mix-blend-mode:multiply}
+.hero.photo small{color:#55606f}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:6px}
 .chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer}
 .chip.on{border-color:var(--a1);color:var(--a1)}
 .card{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:12px;margin-bottom:12px}
-.pic{flex:none;width:96px;height:96px;border-radius:14px;background:#0d1117;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
+.pic{flex:none;width:104px;height:104px;border-radius:14px;background:#f2f3f5;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
 .pic img{width:100%;height:100%;object-fit:contain}
 .info{flex:1;min-width:0}
 .info small{display:block;color:var(--mute);font-size:13px}
@@ -51,29 +55,52 @@ textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div id="sheetBody"></div></div>
 <script>
-// ============ ЭТОТ ФАЙЛ ВЫ МЕНЯЕТЕ ПРИ КАЖДОМ ПОСТУПЛЕНИИ ============
-const BRAND = "Upgrader";                         // название магазина
-const SUPPORT = "https://t.me/xomvape";          // ссылка на менеджера
+// ============ НАСТРОЙКИ МАГАЗИНА ============
+const BRAND = "Upgrader";
+const SUPPORT = "https://t.me/xomvape";
 const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Павлодар","Костанай"];
+const RATE = 5.31;        // курс: сколько тенге в 1 рубле (НБ РК, октябрь 2026). Меняйте при изменении курса
+const PHOTO = "photos/";  // папка с фото в репозитории
+const SPLIT = true;       // true = у всех телефонов значок «Рассрочка»
 
-// Один телефон = один блок { ... },. Цены в тенге. Ниже ДЕМО-товары: замените на свои.
-// Поля:
-//   id     уникальный код (латиница, без пробелов)
-//   model  модель, например "iPhone 15 Pro"
-//   mem    память, например "256 ГБ"
-//   color  цвет
-//   cond   состояние: "Идеальное", "Хорошее", "Есть следы использования"
-//   bat    износ батареи в процентах остаётся (необязательно), например 91
-//   price  цена в тенге, числом без пробелов
-//   old    прежняя цена (необязательно; указывайте только если телефон реально продавался дороже)
-//   img    путь к фото, например "photos/iphone15-black.jpg" (необязательно)
-//   split  true, если доступна рассрочка (необязательно)
-//   sold   true, если телефон продан: он исчезнет из каталога (необязательно)
-const PRODUCTS = [
-  {id:"i15-128-blk", model:"iPhone 15",     mem:"128 ГБ", color:"Чёрный",  cond:"Идеальное", bat:92, price:310000, img:"photos/iphone15-black.jpg", split:true},
-  {id:"i14-128-blu", model:"iPhone 14",     mem:"128 ГБ", color:"Синий",   cond:"Хорошее",   bat:88, price:250000, img:"photos/iphone14-blue.jpg",  split:true},
-  {id:"i13-128-mid", model:"iPhone 13",     mem:"128 ГБ", color:"Тёмная ночь", cond:"Хорошее", bat:85, price:185000, img:"photos/iphone13-midnight.jpg"}
-];
+// ============ ТОВАРЫ ============
+// Один телефон = одна строка. Цена в РУБЛЯХ, в тенге пересчитывается сама по RATE.
+// add("Модель", "Память", "Цвет", цена_в_рублях, "файл_фото.png");
+// Необязательно в конце: {cond:"Хорошее", bat:91, sold:true, price:450000}
+//   cond  состояние,  bat  батарея в %,  sold:true  продан (скрыть),  price  цена сразу в тенге
+const PRODUCTS = [];
+function add(model, mem, color, rub, img, extra={}){
+  PRODUCTS.push({id:"p"+PRODUCTS.length, model, mem, color, rub, price:Math.round(rub*RATE/100)*100, img:img?PHOTO+img:"", split:SPLIT, ...extra});
+}
+add("iPhone 17","256 ГБ","Чёрный",79990,"17black.png");
+add("iPhone 16 Pro","512 ГБ","Чёрный",82000,"16pro.png");
+add("iPhone 17 Air","512 ГБ","Чёрный",84000,"17airblack.png");
+add("iPhone 17 Air","256 ГБ","Синий",75000,"17airblue.png");
+add("iPhone 17 Pro Max","1 ТБ","Чёрный",143000,"iphone17pr_maxblack.png");
+add("iPhone 17 Pro Max","512 ГБ","Оранжевый",140000,"iphone17promaxorange.png");
+add("iPhone 17 Pro","256 ГБ","Чёрный",105000,"iphone17pr_maxblack.png");
+add("iPhone 17 Pro","512 ГБ","Белый",125000,"iphone17promaxwhite.png");
+add("iPhone 17 Pro Max","512 ГБ","Белый",136000,"iphone17promaxwhite.png");
+add("iPhone 17 Pro","256 ГБ","Белый",103000,"iphone17promaxwhite.png");
+add("iPhone 17 Air","256 ГБ","Белый",75000,"17airwhite.png");
+add("iPhone 17 Pro","256 ГБ","Оранжевый",134000,"iphone17promaxorange.png");
+add("iPhone 16 Pro Max","512 ГБ","Чёрный",131000,"16pro.png");
+add("iPhone 17 Air","256 ГБ","Чёрный",77000,"17airblack.png");
+add("iPhone 18 Pro","256 ГБ","Чёрный",140000,"18promaxblack.png");
+add("iPhone 18 Pro","512 ГБ","Чёрный",149000,"18promaxblack.png");
+add("iPhone 18 Pro","256 ГБ","Белый",142000,"18promax_white.png");
+add("iPhone 18 Pro","512 ГБ","Красный",170000,"18promaxred.png");
+add("iPhone 17 Pro Max","512 ГБ","Чёрный",135000,"iphone17pr_maxblack.png");
+add("iPhone 18 Pro Max","256 ГБ","Красный",210000,"18promaxred.png");
+add("iPhone 18 Pro Max","512 ГБ","Красный",200000,"18promaxred.png");
+add("iPhone 17","256 ГБ","Зелёный",80000,"17green.png");
+add("iPhone 17","256 ГБ","Синий",82000,"17blue.png");
+add("iPhone 18 Pro Max","512 ГБ","Чёрный",189000,"18promaxblack.png");
+add("iPhone 18 Pro Max","512 ГБ","Ice",200000,"18promaxice.png");
+add("iPhone 16 Pro","512 ГБ","Чёрный",78000,"16pro.png");
+add("iPhone 18 Pro","256 ГБ","Ice",139000,"18promaxice.png");
+add("iPhone 18 Pro","512 ГБ","Красный",145000,"18promaxred.png");
+add("iPhone Duo","256 ГБ","Чёрный",254000,"iphoneduoblack.png");
 
 const REVIEWS = [];   // реальные отзывы клиентов: {name:"Айдос", date:"06.11.2026", stars:5, text:"..."}
 const GUARANTEE = "Опишите гарантию на телефоны: срок, что входит, условия возврата.";
@@ -101,7 +128,7 @@ function setPvz(c){ pvz=c; store("pvz",pvz); drawPvz(); closeSheet(); }
 function buy(id){
   if(!pvz){ $("#pvz").click(); return; }
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-  const name = `${title(p)} (${p.cond}${p.bat?`, АКБ ${p.bat}%`:""})`;
+  const name = `${title(p)} (${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""})`;
   const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvz};
   orders.unshift(o); store("orders",orders);
   try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
@@ -121,9 +148,9 @@ function renderCatalog(){
   const models = ["Все", ...new Set(list.map(p=>p.model))];
   if(!models.includes(flt)) flt = "Все";
   const shown = list.filter(p=>flt==="Все"||p.model===flt);
-  const hero = `<div class="hero"><img src="photos/hero.png" alt="" onerror="this.outerHTML=phonesSvg()">iPhone<small>Б/у телефоны в Казахстане</small></div>`;
+  const hero = `<div class="hero"><img src="${PHOTO}bio.png" alt="" onload="this.parentNode.classList.add('photo')" onerror="this.outerHTML=phonesSvg()">iPhone<small>Б/у телефоны в Казахстане</small></div>`;
   const chips = `<div class="chips">${models.map(m=>`<div class="chip ${m===flt?'on':''}" onclick="flt='${m}';render()">${m}</div>`).join("")}</div>`;
-  const cards = shown.map(p=>`<div class="card"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="this.replaceWith(document.createTextNode('📱'))">`:"📱"}</div><div class="info"><b>${title(p)}</b><small>${p.cond}${p.bat?` · АКБ ${p.bat}%`:""}</small><div><span class="price">${money(p.price)}</span>${p.old?`<s>${money(p.old)}</s>`:""}</div>${p.split?`<span class="badge">Рассрочка</span>`:""}<button class="btn sm" onclick="buy('${p.id}')">Заказать</button></div></div>`).join("");
+  const cards = shown.map(p=>`<div class="card"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="this.replaceWith(document.createTextNode('📱'))">`:"📱"}</div><div class="info"><b>${title(p)}</b><small>${p.cond||"Б/у"}${p.bat?` · АКБ ${p.bat}%`:""}</small><div><span class="price">${money(p.price)}</span>${p.old?`<s>${money(p.old)}</s>`:""}</div>${p.split?`<span class="badge">Рассрочка</span>`:""}<button class="btn sm" onclick="buy('${p.id}')">Заказать</button></div></div>`).join("");
   return hero + chips + (cards || `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
 }
 function renderOrders(){
