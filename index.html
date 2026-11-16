@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SплитКз</title>
+<title>KzApple</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{--bg:#070b10;--card:#0e151e;--line:#1a2532;--text:#f2f6fa;--mute:#8da0b5;--a1:#00b4d8;--a2:#0096c7;--grad:linear-gradient(90deg,#00b4d8,#0096c7)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,"SF Pro Text",Inter,Roboto,sans-serif;padding-bottom:96px}
 header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;background:rgba(7,11,16,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.logo{font-weight:800;font-size:22px;color:var(--a1)}
-.pvz{border:1px solid var(--a1);border-radius:20px;padding:7px 12px;font-size:12px;color:#fff;cursor:pointer;white-space:nowrap;max-width:62%;overflow:hidden;text-overflow:ellipsis}
+.logo{font-weight:800;font-size:22px;background:linear-gradient(90deg,#00e0c6,#00b4d8,#4d8bff,#00e0c6);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.pvz{border:1px solid var(--a1);border-radius:20px;padding:7px 12px;font-size:12px;color:#fff;cursor:pointer;white-space:nowrap;max-width:62%;overflow:hidden;text-overflow:ellipsis;transition:box-shadow .25s,transform .15s}
+.pvz:active{transform:scale(.96);box-shadow:0 0 14px rgba(0,180,216,.6)}
 .pvz b{color:#ffb020;font-size:12px}
 main{padding:16px}
 h2{font-size:26px;margin:8px 0 16px}
@@ -22,48 +23,71 @@ h2{font-size:26px;margin:8px 0 16px}
 .hbtns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .hbtns .btn{width:auto;padding:12px 18px;border-radius:24px}
 .btn.ghost{background:none;border:1px solid #cfd8e3;color:#fff}
+.btn.ghost::after{display:none}
 .hvis{border-radius:24px;overflow:hidden;padding:8px;background:radial-gradient(70% 120% at 0% 50%,rgba(0,180,216,.55),transparent 62%),radial-gradient(70% 120% at 100% 50%,rgba(0,180,216,.55),transparent 62%),#eef1f5}
-.hvis img{display:block;width:100%;max-height:230px;object-fit:contain;mix-blend-mode:multiply}
+.hvis img{display:block;width:100%;max-height:230px;object-fit:contain;mix-blend-mode:multiply;animation:float 5s ease-in-out infinite}
 .sec{font-size:28px;font-weight:800;margin:22px 0 14px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer}
-.chip.on{border-color:var(--a1);color:var(--a1)}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer;transition:all .2s}
+.chip:active{transform:scale(.93)}
+.chip.on{border-color:var(--a1);color:var(--a1);box-shadow:0 0 12px rgba(0,180,216,.35)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.pc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:10px;display:flex;flex-direction:column}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:10px;display:flex;flex-direction:column;animation:rise .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms);transition:transform .2s,border-color .2s,box-shadow .2s}
+.pc:active{transform:scale(.97);border-color:var(--a1);box-shadow:0 0 18px rgba(0,180,216,.25)}
 .pic{display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;background:#eef1f5;border-radius:14px}
 .pc .pic{width:100%;height:150px;margin-bottom:10px}
-.pic img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.pic img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;transition:transform .35s}
+.pc:active .pic img{transform:scale(1.08) rotate(-2deg)}
 .pc b{font-size:15px}
 .pc small{color:var(--mute);font-size:12px;display:block}
 .pc .price{font-size:20px;margin:0 0 10px}
 .old{color:var(--mute);font-size:13px;text-decoration:line-through;margin-top:6px;min-height:1.2em}
 .pc .btn{margin-top:auto;border-radius:22px;padding:11px}
 .price{font-weight:800;font-size:18px;white-space:nowrap}
-.badge{display:inline-block;background:var(--grad);color:#04121a;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-top:4px}
-.btn{background:var(--grad);color:#04121a;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
-.row{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.badge{display:inline-block;background:var(--grad);color:#04121a;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-top:4px;animation:pulse 2.4s ease-in-out infinite}
+.btn{position:relative;overflow:hidden;background:var(--grad);color:#04121a;border:0;border-radius:14px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;width:100%;transition:transform .15s,box-shadow .2s}
+.btn:active{transform:scale(.96);box-shadow:0 0 18px rgba(0,180,216,.55)}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 4s ease-in-out infinite}
+.row{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:rise .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms);transition:transform .15s}
+.row:active{transform:scale(.98)}
 .row small{color:var(--mute);display:block}
 .note{border:1px solid var(--a1);border-radius:16px;padding:12px;color:var(--mute);font-size:14px;margin-bottom:14px}
 .big{font-size:56px;font-weight:800}
 nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:6px}
-nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;border-radius:20px;font-size:12px;cursor:pointer}
-nav button i{display:block;font-style:normal;font-size:20px}
+nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;border-radius:20px;font-size:12px;cursor:pointer;transition:background .25s,color .25s}
+nav button i{display:block;font-style:normal;font-size:20px;transition:transform .25s}
 nav button.on{background:#0f2a35;color:var(--a1)}
+nav button.on i{transform:translateY(-2px) scale(1.15)}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:30}
-.sheet.show{display:flex}
+.sheet.show{display:flex;animation:fade .25s both}
 .sheet div{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:20px;max-height:70vh;overflow:auto}
+.sheet.show>div{animation:slideUp .35s cubic-bezier(.2,.8,.2,1) both}
 textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;margin:10px 0}
-.welcome{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(90% 60% at 15% 20%,rgba(0,180,216,.38),transparent 60%),radial-gradient(80% 60% at 90% 85%,rgba(60,110,255,.3),transparent 60%),#070b10}
-.welcome .hi{font-size:18px;color:var(--mute);margin-bottom:6px}
-.welcome .name{font-size:54px;font-weight:800;line-height:1.05;background:linear-gradient(90deg,#00e0c6,#00b4d8,#4d8bff);-webkit-background-clip:text;color:transparent}
-.welcome .tag{font-size:22px;font-weight:700;margin-top:16px}
-.welcome .bot{position:absolute;left:20px;right:20px;bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.welcome{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;overflow:hidden;background:#070b10;transition:opacity .45s,transform .45s}
+.welcome.out{opacity:0;transform:scale(1.06);pointer-events:none}
+.welcome::before,.welcome::after{content:"";position:absolute;width:75vmax;height:75vmax;border-radius:50%;filter:blur(60px);opacity:.55;z-index:-1}
+.welcome::before{left:-30vmax;top:-25vmax;background:rgba(0,180,216,.55);animation:drift 12s ease-in-out infinite alternate}
+.welcome::after{right:-30vmax;bottom:-25vmax;background:rgba(60,110,255,.5);animation:drift 14s ease-in-out infinite alternate-reverse}
+.welcome .hi{font-size:18px;color:var(--mute);margin-bottom:6px;animation:rise .7s .1s both}
+.welcome .name{font-size:54px;font-weight:800;line-height:1.05;background:linear-gradient(90deg,#00e0c6,#00b4d8,#4d8bff,#00e0c6);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise .8s .25s both,flow 5s linear infinite}
+.welcome .tag{font-size:22px;font-weight:700;margin-top:16px;animation:rise .8s .45s both}
+.wuser{display:flex;align-items:center;gap:12px;margin-top:22px;text-align:left;animation:rise .8s .55s both}.wuser:empty{display:none}.wuser .ava{width:48px;height:48px;font-size:20px}.wuser small{display:block;color:var(--a1);font-size:13px}
+.welcome .bot{position:absolute;left:20px;right:20px;bottom:calc(24px + env(safe-area-inset-bottom,0px));animation:rise .8s .7s both}
 .welcome .bot .btn{padding:16px;border-radius:20px;font-size:18px}
 .welcome .legal{color:var(--mute);font-size:12px;margin-top:12px}
 .welcome .legal u{cursor:pointer;color:#b5c3d3}
 .ava{width:64px;height:64px;border-radius:50%;background:var(--grad);color:#04121a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;overflow:hidden;flex:none}
 .ava img{width:100%;height:100%;object-fit:cover}
 input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;margin:10px 0 14px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes flow{to{background-position:200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,180,216,.5)}50%{box-shadow:0 0 0 6px rgba(0,180,216,0)}}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(12vmax,10vmax) scale(1.2)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -71,18 +95,18 @@ input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--l
 <main id="view"></main>
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div id="sheetBody"></div></div>
-<div class="welcome" id="welcome"><div class="hi">Добро пожаловать</div><div class="name" id="wname"></div><div class="tag">Магазин настоящих сплитеров!</div><div class="bot"><button class="btn" onclick="startApp()">Начать</button><div class="legal">Нажимая на кнопку, вы соглашаетесь со всеми <u onclick="rules()">правилами сервиса</u></div></div></div>
+<div class="welcome" id="welcome"><div class="hi">Добро пожаловать</div><div class="name" id="wname"></div><div class="tag">Магазин настоящих сплитеров!</div><div class="wuser" id="wuser"></div><div class="bot"><button class="btn" onclick="startApp()">Начать</button><div class="legal">Нажимая на кнопку, вы соглашаетесь со всеми <u onclick="rules()">правилами сервиса</u></div></div></div>
 <script>
 // ============ НАСТРОЙКИ МАГАЗИНА ============
-const BRAND = "SплитКз";
+const BRAND = "KzApple";
 const SUPPORT = "https://t.me/xomvape";
 const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Павлодар","Костанай"];
 const RATE = 5.31;        // курс: сколько тенге в 1 рубле (НБ РК, октябрь 2026). Меняйте при изменении курса
 const PHOTO = "photos/";  // папка с фото в репозитории
 const HERO_TEXT = "Выбери модель, оплати частями и забери в удобном пункте выдачи.";  // можно дописать только правдивые фразы
-const RULES = "";
-const PVZ_TYPES = ["Wildberries"];   // службы выдачи, которые можно выбрать
-const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и пункт выдачи (Wildberries) и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
+const RULES = "Опишите правила сервиса: условия заказа, оплаты, сплита, возврата и гарантии.";
+const PVZ_TYPES = ["Wildberries","СДЭК"];   // службы выдачи, которые можно выбрать
+const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и пункт выдачи (Wildberries или СДЭК) и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
 
 // ============ ТОВАРЫ ============
 // Один телефон = одна строка. Цены в РУБЛЯХ, в тенге пересчитываются сами по RATE.
@@ -129,36 +153,8 @@ add("iPhone Duo","256 ГБ","Чёрный",254000,"iphoneduoblack.png");
 add("iPhone Duo","256 ГБ","Белый",254000,"iphoneduowhite.png");
 
 const REVIEWS = [];   // реальные отзывы клиентов: {name:"Айдос", date:"06.11.2026", stars:5, text:"..."}
-const GUARANTEE = "1 • ГЛАВНОЕ
-Мы не создаём иллюзию 100% гарантий - мы показываем результаты
-В интернете не бывает никаких гарантий, кроме отзывов. Можно сколько угодно писать: «100% гарантия», «точно не обманем». Но сами по себе такие слова ничего не гарантируют.
-2 • НАШИ ГАРАНТИИ
-Отзывы и репутация
-Если вы скажете: «Отзывы можно накрутить», значит, никакие доказательства вас всё равно не убедят. В таком случае просто не заказывайте.
-3 • ВЫБОР ЗА ВАМИ
-Не доверяете?
-Не заказывайте.
-Мы никого не уговариваем, не заставляем переводить деньги и не убеждаем любой ценой. А вот мошенники как раз могут пообещать вам всё что угодно, их единственная цель - убедить вас перевести деньги.
-А тем, кто изучил наш канал, отзывы, раздел
-«Частые вопросы» в приложении и готов оформить заказ, всегда рады.";
-const FAQ = [["Не чернуха ли это?
-Нет! Wildberries даёт данную функцию как "доверительная рассрочка". Данная Функция даётся исключительно активным пользователям их сервисов. Частями оформляется без официального договора и не считается кредитом или рассрочкой.
-Что будет, если я оформлю заказ через ваше приложение? Я несу ответственность?
-Никакую ответственность вы не несете.
-Вы просто оформляете заказ через наш бот. Всё остальное делает система автоматически: она обрабатывает платёж, формирует заказ, передает вам
-QR-код, показывает маршрут доставки.
-Вы не подписываете договоров, не берёте на себя обязательств и не связываетесь с маркетплейсом напрямую.
-Коротко:
-﻿﻿Вы - получатель товара, а не участник сделки.
-﻿﻿Система работает автономно, вы в ней - просто пользователь.
-﻿﻿Никаких звонков, проверок, претензий и юридических последствий для вас нет.
-﻿﻿Если что-то идёт не так - система разбирается сама, вас не трогают.
-Важно: все процессы завязаны на алгоритмы, а не на вас. Вы просто забираете товар.
-Могут ли заблокировать телефон, купленный в сплит по IMEI
-Нет, заблокировать телефон по ІМЕІ не
-могут. Никто не отслеживает эти телефоны. Всё это мифы, которые запустили школьники, не имея никаких фактов.
-Что делать, если придёт повреждённый или неисправный товар?
-В таком случае выбор остаётся за вами: мы предложим замену на новый товар или возврат денежных средств. Просто обратитесь в нашу службу поддержки, и мы поможем решить вопрос."]];
+const GUARANTEE = "Опишите гарантию на телефоны: срок, что входит, условия возврата.";
+const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на б/у телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
 function getUser(){
@@ -167,11 +163,19 @@ function getUser(){
     const raw = tg?.initData || new URLSearchParams(location.hash.slice(1)).get("tgWebAppData") || "";
     const j = new URLSearchParams(raw).get("user"); if(j) u = JSON.parse(j);
   }catch(e){} }
-  if(!u){   // запасной способ: бот передаёт данные в ссылке (?id=...&u=...&n=...)
+  if(!u){   // запасной способ: бот передаёт данные в ссылке (?id=...&u=...&n=...&l=...&p=...)
     const q = new URLSearchParams(location.search);
     if(q.get("id")) u = {id:+q.get("id"), username:q.get("u")||"", first_name:q.get("n")||"Гость"};
+    if(q.get("l")) u.last_name = q.get("l");
+    if(q.get("p")) u.photo_url = q.get("p");
   }
-  return u || {id:0, first_name:"Гость"};
+  let saved = {}; try{ saved = JSON.parse(localStorage.getItem("user")) || {}; }catch(e){}
+  if(u && u.id){   // профиль запоминается на устройстве; если фото не пришло сейчас, берём прежнее
+    if(saved.id===u.id) u = {...saved, ...u};
+    try{ localStorage.setItem("user", JSON.stringify(u)); }catch(e){}
+    return u;
+  }
+  return saved.id ? saved : {id:0, first_name:"Гость"};
 }
 const user = getUser();
 const $ = s => document.querySelector(s);
@@ -182,13 +186,16 @@ if(!pvz || typeof pvz !== "object" || !pvz.addr) pvz = null;
 const pvzFull = p => `${p.city} · ${p.type} · ${p.addr}`;
 const title = p => `${p.model} ${p.mem} ${p.color}`;
 
-$("#brand").textContent = BRAND; $("#wname").textContent = BRAND;
 const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const startApp = () => { tg?.HapticFeedback?.impactOccurred("light"); $("#welcome").remove(); };
+const fullName = () => [user.first_name,user.last_name].filter(Boolean).join(" ") || "Гость";
+const avaHtml = () => user.photo_url ? `<img src="${esc(user.photo_url)}" alt="" onerror="this.parentNode.textContent='${esc(fullName()[0].toUpperCase())}'">` : esc(fullName()[0].toUpperCase());
+$("#brand").textContent = BRAND; $("#wname").textContent = BRAND;
+if(user.id) $("#wuser").innerHTML = `<div class="ava">${avaHtml()}</div><div><b>${esc(fullName())}</b><small>${user.username?'@'+esc(user.username):'профиль Telegram подключён'}</small></div>`;
+const startApp = () => { tg?.HapticFeedback?.impactOccurred("light"); const w=$("#welcome"); w.classList.add("out"); setTimeout(()=>w.remove(),450); };
 const rules = () => openSheet("<h2>Правила сервиса</h2><p>"+RULES+"</p>");
 const TABS = [["catalog","▦","Каталог"],["orders","📦","Заказы"],["reviews","★","Отзывы"],["profile","👤","Профиль"]];
 const drawNav = () => $("#nav").innerHTML = TABS.map(([k,i,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${t}</button>`).join("");
-const go = t => { tab=t; render(); };
+const go = t => { tg?.HapticFeedback?.selectionChanged?.(); tab=t; render(); };
 const drawPvz = () => $("#pvzName").textContent = pvz ? `${pvz.city} · ${pvz.type}` : "не выбран";
 const openSheet = h => { $("#sheetBody").innerHTML = h; $("#sheet").classList.add("show"); };
 const closeSheet = () => $("#sheet").classList.remove("show");
@@ -209,6 +216,7 @@ function pvzSave(){
 function buy(id){
   closeSheet();
   if(!pvz){ pending=id; $("#pvz").click(); return; }
+  if(tg?.initDataUnsafe?.query_id) return openSheet("<h2>Откройте через чат</h2><p>Чтобы заказ дошёл до менеджера, откройте магазин кнопкой «Открыть магазин» внизу чата с ботом (команда /start). Эта кнопка рядом с полем ввода нужна для профиля.</p>");
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
   const name = `${title(p)} (${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""})`;
   const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvzFull(pvz)};
@@ -216,13 +224,6 @@ function buy(id){
   try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
   tg?.HapticFeedback?.notificationOccurred("success");
   go("orders");
-}
-
-const PH=[["#d5d8de","#9aa1ad"],["#ff9a4d","#e2681a"],["#41538a","#1c2748"],["#2b2e35","#101216"],["#f3f4f6","#c9ccd3"]];
-function phonesSvg(){
-  const d=PH.map(([a,b],i)=>`<linearGradient id="ph${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`).join("");
-  const r=PH.map((c,i)=>{const x=30+i*50,y=i===2?6:16;return `<rect x="${x}" y="${y}" width="56" height="118" rx="12" fill="url(#ph${i})"/><rect x="${x+5}" y="${y+5}" width="27" height="29" rx="7" fill="rgba(0,0,0,.35)"/><circle cx="${x+13}" cy="${y+13}" r="5" fill="#0b0d10"/><circle cx="${x+24}" cy="${y+13}" r="5" fill="#0b0d10"/><circle cx="${x+18}" cy="${y+25}" r="5" fill="#0b0d10"/>`}).join("");
-  return `<svg viewBox="0 0 316 142" aria-hidden="true"><defs>${d}</defs>${r}</svg>`;
 }
 
 function imgErr(el,src){ if(!el.dataset.t && src.includes("_")){ el.dataset.t=1; el.src=src.replace(/_/g," "); } else el.replaceWith(document.createTextNode("📱")); }
@@ -237,12 +238,12 @@ function renderCatalog(){
   const shown = list.filter(p=>flt==="Все"||p.model===flt);
   const hero = `<section class="hh"><div class="eyebrow">СПЛИТ · Б/У · НОВЫЕ</div><h1>iPhone в сплит и б/у — выбирай и забирай</h1><p>${HERO_TEXT}</p><div class="hbtns"><button class="btn" onclick="$('#cat').scrollIntoView({behavior:'smooth'})">Смотреть каталог</button><button class="btn ghost" onclick="how()">Как работает сплит</button></div><div class="hvis"><img src="${PHOTO}bio.png" alt="" onerror="this.parentNode.remove()"></div></section>`;
   const chips = `<div class="chips">${models.map(m=>`<div class="chip ${m===flt?'on':''}" onclick="flt='${m}';render()">${m}</div>`).join("")}</div>`;
-  const cards = shown.map(p=>`<div class="pc"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="imgErr(this,'${p.img}')">`:"📱"}</div><b>${p.model}</b><small>${p.mem} · ${p.color}</small><small>${p.cond||"Б/у"}${p.bat?` · АКБ ${p.bat}%`:""}</small><div class="old">${p.old?money(p.old):"&nbsp;"}</div><div class="price">${money(p.price)}</div><button class="btn" onclick="choose('${p.id}')">Выбрать</button></div>`).join("");
+  const cards = shown.map((p,i)=>`<div class="pc" style="--i:${Math.min(i,8)}"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="imgErr(this,'${p.img}')">`:"📱"}</div><b>${p.model}</b><small>${p.mem} · ${p.color}</small><small>${p.cond||"Б/у"}${p.bat?` · АКБ ${p.bat}%`:""}</small><div class="old">${p.old?money(p.old):"&nbsp;"}</div><div class="price">${money(p.price)}</div><button class="btn" onclick="choose('${p.id}')">Выбрать</button></div>`).join("");
   return hero + `<div class="sec" id="cat">Каталог</div>` + chips + (cards ? `<div class="grid">${cards}</div>` : `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
 }
 function renderOrders(){
   if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет.</div>`;
-  return `<h2>История заказов</h2>`+orders.map(o=>`<div class="row"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${esc(o.city)}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
+  return `<h2>История заказов</h2>`+orders.map((o,i)=>`<div class="row" style="--i:${Math.min(i,8)}"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${esc(o.city)}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
 }
 function renderReviews(){
   const head = REVIEWS.length ? `<div class="row"><div><div class="big">${(REVIEWS.reduce((s,r)=>s+r.stars,0)/REVIEWS.length).toFixed(1)}</div><small>${REVIEWS.length} отзывов</small></div></div>` : `<div class="note">Отзывов пока нет. Станьте первым после получения заказа.</div>`;
@@ -253,15 +254,14 @@ function reviewForm(){
   openSheet(`<h2>Ваш отзыв</h2><textarea rows="4" placeholder="Как всё прошло?"></textarea><button class="btn" onclick="closeSheet()">Отправить</button>`);
 }
 function renderProfile(){
-  const link=(t,s,f)=>`<div class="row" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
-  const nm = [user.first_name,user.last_name].filter(Boolean).join(" ") || "Гость";
-  const ava = user.photo_url ? `<img src="${esc(user.photo_url)}" alt="">` : esc(nm[0].toUpperCase());
+  const link=(t,s,f,i)=>`<div class="row" style="--i:${i}" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
+  const nm = fullName(), ava = avaHtml();
   return `<h2>Профиль</h2>${user.id?"":`<div class="note">Не удалось получить данные Telegram. Закройте магазин и откройте его заново кнопкой «Открыть магазин» в боте (команда /start).</div>`}<div class="row" style="justify-content:flex-start;gap:14px"><div class="ava">${ava}</div><div><b style="font-size:18px">${esc(nm)}</b><small style="color:var(--a1)">${user.username?'@'+esc(user.username):'username не указан'}</small><small>ID: ${user.id}</small></div></div>`+
-   link("Поддержка","Нужна помощь? Пишите","tg?.openTelegramLink(SUPPORT)")+
-   link("Частые вопросы","Ответы на вопросы","faq()")+
-   link("Как всё работает","От заказа до получения","how()")+
-   link("Пункт выдачи",pvz?esc(pvzFull(pvz)):"Не выбран","$('#pvz').click()")+
-   link("Наши гарантии","Условия гарантии и возврата","openSheet('<h2>Гарантии</h2><p>'+GUARANTEE+'</p>')");
+   link("Поддержка","Нужна помощь? Пишите","tg?.openTelegramLink(SUPPORT)",1)+
+   link("Частые вопросы","Ответы на вопросы","faq()",2)+
+   link("Как всё работает","От заказа до получения","how()",3)+
+   link("Пункт выдачи",pvz?esc(pvzFull(pvz)):"Не выбран","$('#pvz').click()",4)+
+   link("Наши гарантии","Условия гарантии и возврата","openSheet('<h2>Гарантии</h2><p>'+GUARANTEE+'</p>')",5);
 }
 function faq(){ openSheet("<h2>Частые вопросы</h2>"+FAQ.map(([q,a])=>`<p><b>${q}</b><br>${a}</p>`).join("")); }
 function how(){ openSheet("<h2>Как работает сплит</h2><p>"+HOW+"</p>"); }
