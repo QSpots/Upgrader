@@ -130,7 +130,19 @@ const GUARANTEE = "Опишите гарантию на телефоны: сро
 const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на б/у телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
-const user = tg?.initDataUnsafe?.user || {id:0,first_name:"Гость"};
+function getUser(){
+  let u = tg?.initDataUnsafe?.user;
+  if(!u){ try{
+    const raw = tg?.initData || new URLSearchParams(location.hash.slice(1)).get("tgWebAppData") || "";
+    const j = new URLSearchParams(raw).get("user"); if(j) u = JSON.parse(j);
+  }catch(e){} }
+  if(!u){   // запасной способ: бот передаёт данные в ссылке (?id=...&u=...&n=...)
+    const q = new URLSearchParams(location.search);
+    if(q.get("id")) u = {id:+q.get("id"), username:q.get("u")||"", first_name:q.get("n")||"Гость"};
+  }
+  return u || {id:0, first_name:"Гость"};
+}
+const user = getUser();
 const $ = s => document.querySelector(s);
 const money = n => n.toLocaleString("ru-RU")+" ₸";
 const store = (k,v) => { try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null } };
@@ -214,7 +226,7 @@ function renderProfile(){
   const link=(t,s,f)=>`<div class="row" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
   const nm = [user.first_name,user.last_name].filter(Boolean).join(" ") || "Гость";
   const ava = user.photo_url ? `<img src="${esc(user.photo_url)}" alt="">` : esc(nm[0].toUpperCase());
-  return `<h2>Профиль</h2><div class="row" style="justify-content:flex-start;gap:14px"><div class="ava">${ava}</div><div><b style="font-size:18px">${esc(nm)}</b><small style="color:var(--a1)">${user.username?'@'+esc(user.username):'username не указан'}</small><small>ID: ${user.id}</small></div></div>`+
+  return `<h2>Профиль</h2>${user.id?"":`<div class="note">Не удалось получить данные Telegram. Закройте магазин и откройте его заново кнопкой «Открыть магазин» в боте (команда /start).</div>`}<div class="row" style="justify-content:flex-start;gap:14px"><div class="ava">${ava}</div><div><b style="font-size:18px">${esc(nm)}</b><small style="color:var(--a1)">${user.username?'@'+esc(user.username):'username не указан'}</small><small>ID: ${user.id}</small></div></div>`+
    link("Поддержка","Нужна помощь? Пишите","tg?.openTelegramLink(SUPPORT)")+
    link("Частые вопросы","Ответы на вопросы","faq()")+
    link("Как всё работает","От заказа до получения","how()")+
