@@ -11,7 +11,7 @@
 body{background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,"SF Pro Text",Inter,Roboto,sans-serif;padding-bottom:96px}
 header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;background:rgba(7,11,16,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .logo{font-weight:800;font-size:22px;color:var(--a1)}
-.pvz{border:1px solid var(--a1);border-radius:20px;padding:7px 12px;font-size:12px;color:#fff;cursor:pointer;white-space:nowrap}
+.pvz{border:1px solid var(--a1);border-radius:20px;padding:7px 12px;font-size:12px;color:#fff;cursor:pointer;white-space:nowrap;max-width:62%;overflow:hidden;text-overflow:ellipsis}
 .pvz b{color:#ffb020;font-size:12px}
 main{padding:16px}
 h2{font-size:26px;margin:8px 0 16px}
@@ -49,10 +49,21 @@ nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-b
 nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;border-radius:20px;font-size:12px;cursor:pointer}
 nav button i{display:block;font-style:normal;font-size:20px}
 nav button.on{background:#0f2a35;color:var(--a1)}
-.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:9}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:30}
 .sheet.show{display:flex}
 .sheet div{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:20px;max-height:70vh;overflow:auto}
 textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;margin:10px 0}
+.welcome{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(90% 60% at 15% 20%,rgba(0,180,216,.38),transparent 60%),radial-gradient(80% 60% at 90% 85%,rgba(60,110,255,.3),transparent 60%),#070b10}
+.welcome .hi{font-size:18px;color:var(--mute);margin-bottom:6px}
+.welcome .name{font-size:54px;font-weight:800;line-height:1.05;background:linear-gradient(90deg,#00e0c6,#00b4d8,#4d8bff);-webkit-background-clip:text;color:transparent}
+.welcome .tag{font-size:22px;font-weight:700;margin-top:16px}
+.welcome .bot{position:absolute;left:20px;right:20px;bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.welcome .bot .btn{padding:16px;border-radius:20px;font-size:18px}
+.welcome .legal{color:var(--mute);font-size:12px;margin-top:12px}
+.welcome .legal u{cursor:pointer;color:#b5c3d3}
+.ava{width:64px;height:64px;border-radius:50%;background:var(--grad);color:#04121a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;overflow:hidden;flex:none}
+.ava img{width:100%;height:100%;object-fit:cover}
+input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;margin:10px 0 14px}
 </style>
 </head>
 <body>
@@ -60,9 +71,10 @@ textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(
 <main id="view"></main>
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div id="sheetBody"></div></div>
+<div class="welcome" id="welcome"><div class="hi">Добро пожаловать</div><div class="name" id="wname"></div><div class="tag">Магазин настоящих сплитеров!</div><div class="bot"><button class="btn" onclick="startApp()">Начать</button><div class="legal">Нажимая на кнопку, вы соглашаетесь со всеми <u onclick="rules()">правилами сервиса</u></div></div></div>
 <script>
 // ============ НАСТРОЙКИ МАГАЗИНА ============
-const BRAND = "KzApple";
+const BRAND = "Upgrader";
 const SUPPORT = "https://t.me/xomvape";
 const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Павлодар","Костанай"];
 const RATE = 5.31;        // курс: сколько тенге в 1 рубле (НБ РК, октябрь 2026). Меняйте при изменении курса
@@ -70,7 +82,9 @@ const PHOTO = "photos/";  // папка с фото в репозитории
 const SPLIT = true;       // true = у всех телефонов показывается сплит
 const SPLIT_MONTHS = 4;   // на сколько месяцев сплит: платёж в месяц = цена / это число. Укажите ВАШИ реальные условия
 const HERO_TEXT = "Выбери модель, оплати частями и забери в удобном пункте выдачи.";  // можно дописать только правдивые фразы
-const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
+const RULES = "Опишите правила сервиса: условия заказа, оплаты, сплита, возврата и гарантии.";
+const PVZ_TYPES = ["Wildberries","СДЭК"];   // службы выдачи, которые можно выбрать
+const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и пункт выдачи (Wildberries или СДЭК) и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
 
 // ============ ТОВАРЫ ============
 // Один телефон = одна строка. Цена в РУБЛЯХ, в тенге пересчитывается сама по RATE.
@@ -120,26 +134,41 @@ const user = tg?.initDataUnsafe?.user || {id:0,first_name:"Гость"};
 const $ = s => document.querySelector(s);
 const money = n => n.toLocaleString("ru-RU")+" ₸";
 const store = (k,v) => { try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null } };
-let orders = store("orders") || [], pvz = store("pvz") || null, tab = "catalog", flt = "Все";
+let orders = store("orders") || [], pvz = store("pvz") || null, tab = "catalog", flt = "Все", pending = null, draft = {};
+if(!pvz || typeof pvz !== "object" || !pvz.addr) pvz = null;
+const pvzFull = p => `${p.city} · ${p.type} · ${p.addr}`;
 const title = p => `${p.model} ${p.mem} ${p.color}`;
 
-$("#brand").textContent = BRAND;
+$("#brand").textContent = BRAND; $("#wname").textContent = BRAND;
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const startApp = () => { tg?.HapticFeedback?.impactOccurred("light"); $("#welcome").remove(); };
+const rules = () => openSheet("<h2>Правила сервиса</h2><p>"+RULES+"</p>");
 const TABS = [["catalog","▦","Каталог"],["orders","📦","Заказы"],["reviews","★","Отзывы"],["profile","👤","Профиль"]];
 const drawNav = () => $("#nav").innerHTML = TABS.map(([k,i,t])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${t}</button>`).join("");
 const go = t => { tab=t; render(); };
-const drawPvz = () => $("#pvzName").textContent = pvz || "не выбран";
+const drawPvz = () => $("#pvzName").textContent = pvz ? `${pvz.city} · ${pvz.type}` : "не выбран";
 const openSheet = h => { $("#sheetBody").innerHTML = h; $("#sheet").classList.add("show"); };
 const closeSheet = () => $("#sheet").classList.remove("show");
 $("#sheet").addEventListener("click", e => { if(e.target.id==="sheet") closeSheet(); });
-$("#pvz").onclick = () => openSheet("<h2>Ваш город</h2>"+CITIES.map(c=>`<div class="row" onclick="setPvz('${c}')">${c}</div>`).join(""));
-function setPvz(c){ pvz=c; store("pvz",pvz); drawPvz(); closeSheet(); }
+$("#pvz").onclick = () => pvzCity();
+function pvzCity(){ openSheet("<h2>Ваш город</h2>"+CITIES.map(c=>`<div class="row" onclick="pvzPick('${c}')">${c}</div>`).join("")+`<div class="row" onclick="pvzOther()">Другой город…</div>`); }
+function pvzOther(){ openSheet(`<h2>Другой город</h2><input id="oc" placeholder="Название города"><button class="btn" onclick="pvzOtherNext()">Далее</button>`); }
+function pvzOtherNext(){ const v=$("#oc").value.trim(); if(v.length<2){ $("#oc").style.borderColor="#ff5a5a"; return; } pvzPick(v); }
+function pvzPick(c){ draft={city:c}; openSheet(`<h2>${esc(c)}</h2><p style="color:var(--mute);margin-bottom:12px">Выберите службу выдачи</p>`+PVZ_TYPES.map((t,i)=>`<div class="row" onclick="pvzAddr(${i})"><b>${t}</b>›</div>`).join("")); }
+function pvzAddr(i){ draft.type=PVZ_TYPES[i]; openSheet(`<h2>${esc(draft.city)} · ${draft.type}</h2><p style="color:var(--mute)">Укажите адрес пункта выдачи: улица, дом или номер ПВЗ</p><input id="pa" placeholder="Например: ул. Абая 10"><button class="btn" onclick="pvzSave()">Сохранить</button>`); }
+function pvzSave(){
+  const a=$("#pa").value.trim();
+  if(a.length<3){ $("#pa").style.borderColor="#ff5a5a"; return; }
+  pvz={...draft, addr:a}; store("pvz",pvz); drawPvz(); closeSheet();
+  if(pending){ const id=pending; pending=null; choose(id); }
+}
 
 function buy(id){
   closeSheet();
-  if(!pvz){ $("#pvz").click(); return; }
+  if(!pvz){ pending=id; $("#pvz").click(); return; }
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
   const name = `${title(p)} (${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""})`;
-  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvz};
+  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvzFull(pvz)};
   orders.unshift(o); store("orders",orders);
   try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
   tg?.HapticFeedback?.notificationOccurred("success");
@@ -157,7 +186,7 @@ function imgErr(el,src){ if(!el.dataset.t && src.includes("_")){ el.dataset.t=1;
 const monthly = p => Math.ceil(p.price/SPLIT_MONTHS/100)*100;
 function choose(id){
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-  openSheet(`<h2>${p.model}</h2><p>${p.mem} · ${p.color} · ${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""}</p><div class="price" style="margin:10px 0">${money(p.price)}</div>${p.split?`<p style="color:var(--a1)">Сплит: ${money(monthly(p))} / мес</p>`:""}<p style="color:var(--mute);margin:10px 0 14px">Город: ${pvz||"не выбран"}</p><button class="btn" onclick="buy('${p.id}')">Оформить заказ</button>`);
+  openSheet(`<h2>${p.model}</h2><p>${p.mem} · ${p.color} · ${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""}</p><div class="price" style="margin:10px 0">${money(p.price)}</div>${p.split?`<p style="color:var(--a1)">Сплит: ${money(monthly(p))} / мес</p>`:""}<p style="color:var(--mute);margin:10px 0 14px">Пункт выдачи: ${pvz?esc(pvzFull(pvz)):"не выбран"}</p><button class="btn" onclick="buy('${p.id}')">Оформить заказ</button>`);
 }
 function renderCatalog(){
   const list = PRODUCTS.filter(p=>!p.sold);
@@ -171,7 +200,7 @@ function renderCatalog(){
 }
 function renderOrders(){
   if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет.</div>`;
-  return `<h2>История заказов</h2>`+orders.map(o=>`<div class="row"><div><b>${o.id}</b><br>${o.name}<small>Город: ${o.city}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
+  return `<h2>История заказов</h2>`+orders.map(o=>`<div class="row"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${esc(o.city)}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
 }
 function renderReviews(){
   const head = REVIEWS.length ? `<div class="row"><div><div class="big">${(REVIEWS.reduce((s,r)=>s+r.stars,0)/REVIEWS.length).toFixed(1)}</div><small>${REVIEWS.length} отзывов</small></div></div>` : `<div class="note">Отзывов пока нет. Станьте первым после получения заказа.</div>`;
@@ -183,11 +212,13 @@ function reviewForm(){
 }
 function renderProfile(){
   const link=(t,s,f)=>`<div class="row" onclick="${f}"><div><b>${t}</b><small>${s}</small></div>›</div>`;
-  return `<h2>Профиль</h2><div class="row"><div><b>${user.username?'@'+user.username:user.first_name}</b><small>ID: ${user.id}</small></div></div>`+
+  const nm = [user.first_name,user.last_name].filter(Boolean).join(" ") || "Гость";
+  const ava = user.photo_url ? `<img src="${esc(user.photo_url)}" alt="">` : esc(nm[0].toUpperCase());
+  return `<h2>Профиль</h2><div class="row" style="justify-content:flex-start;gap:14px"><div class="ava">${ava}</div><div><b style="font-size:18px">${esc(nm)}</b><small style="color:var(--a1)">${user.username?'@'+esc(user.username):'username не указан'}</small><small>ID: ${user.id}</small></div></div>`+
    link("Поддержка","Нужна помощь? Пишите","tg?.openTelegramLink(SUPPORT)")+
    link("Частые вопросы","Ответы на вопросы","faq()")+
    link("Как всё работает","От заказа до получения","how()")+
-   link("Мой город","Сейчас: "+(pvz||"не выбран"),"$('#pvz').click()")+
+   link("Пункт выдачи",pvz?esc(pvzFull(pvz)):"Не выбран","$('#pvz').click()")+
    link("Наши гарантии","Условия гарантии и возврата","openSheet('<h2>Гарантии</h2><p>'+GUARANTEE+'</p>')");
 }
 function faq(){ openSheet("<h2>Частые вопросы</h2>"+FAQ.map(([q,a])=>`<p><b>${q}</b><br>${a}</p>`).join("")); }
