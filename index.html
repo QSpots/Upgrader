@@ -52,6 +52,23 @@ h2{font-size:26px;margin:8px 0 16px}
 .row:active{transform:scale(.98)}
 .row small{color:var(--mute);display:block}
 .note{border:1px solid var(--a1);border-radius:16px;padding:12px;color:var(--mute);font-size:14px;margin-bottom:14px}
+.rimg{display:block;width:auto;height:auto;max-width:100%;max-height:280px;margin-top:10px;padding:6px;background:var(--bg);border:1px solid var(--a1);border-radius:16px;box-shadow:0 0 14px rgba(0,180,216,.2)}
+.review-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;animation:rise .45s both}
+.review-top{display:flex;align-items:flex-start;gap:11px}
+.review-person{display:flex;align-items:center;gap:10px;min-width:0;flex:1;border:0;background:none;color:inherit;text-align:left;padding:0;cursor:pointer}
+.review-person:active{opacity:.75}
+.review-avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;color:#fff;font-size:19px;font-weight:800;box-shadow:0 3px 12px #0004}
+.review-person b{font-size:15px;display:block;line-height:1.25}
+.review-verified{display:block;color:#9b83ff;font-size:11px;margin-top:3px}
+.review-date{color:var(--mute);font-size:11px;white-space:nowrap;padding-top:2px}
+.review-stars{color:#ffc247;letter-spacing:1px;font-size:16px;margin:10px 0 5px}
+.review-text{font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.review-notice{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);backdrop-filter:blur(7px)}
+.review-notice.show{display:flex;animation:fade .2s both}
+.review-notice-box{position:relative;width:min(100%,480px);background:#100e19;border:1px solid #302b42;border-radius:24px;padding:24px 20px;box-shadow:0 24px 80px #0009;animation:rise .25s both}
+.review-notice-box h3{font-size:17px;margin:0 42px 16px 0}
+.review-notice-box p{font-size:14px;line-height:1.6;color:#aaa6b5;margin:0 0 16px}
+.review-notice-close{position:absolute;right:16px;top:16px;width:34px;height:34px;border:0;border-radius:50%;background:#211e2b;color:#aaa6b5;font-size:20px;cursor:pointer}
 .big{font-size:56px;font-weight:800}
 nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:6px}
 nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;border-radius:20px;font-size:12px;cursor:pointer;transition:background .25s,color .25s}
@@ -88,6 +105,74 @@ input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--l
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,180,216,.5)}50%{box-shadow:0 0 0 6px rgba(0,180,216,0)}}
 @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(12vmax,10vmax) scale(1.2)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* FAQ page — KzApple brand styling */
+.faq-page{position:fixed;inset:0;z-index:40;display:none;overflow-y:auto;background:var(--bg);color:var(--text);padding-bottom:28px}
+.faq-page.show{display:block;animation:fade .2s both}
+.faq-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(7,11,16,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.faq-brand{font-size:20px;font-weight:900;letter-spacing:-.4px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.faq-pvz{border:1px solid rgba(0,180,216,.55);border-radius:18px;padding:6px 10px;font-size:10px;color:var(--mute);text-align:center;background:rgba(0,180,216,.045)}
+.faq-pvz b{display:block;color:var(--a1);font-size:11px}
+.faq-content{padding:0 14px 28px;max-width:900px;margin:0 auto}
+.faq-intro{margin:0 0 10px;padding:17px 14px;text-align:center;background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 18px 18px;color:var(--mute);font-size:13px;line-height:1.55}
+.faq-item{margin:10px 0;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:border-color .2s,transform .15s}
+.faq-item.open{border-color:rgba(0,180,216,.55)}
+.faq-question{width:100%;display:flex;align-items:center;gap:12px;padding:13px 14px;background:none;border:0;color:var(--text);text-align:left;font-family:inherit;font-size:14px;font-weight:700;line-height:1.35;cursor:pointer;min-height:62px}
+.faq-icon{width:36px;height:36px;flex:none;border:1px solid rgba(0,180,216,.4);background:rgba(0,180,216,.08);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--a1);font-size:18px}
+.faq-qtext{flex:1}
+.faq-chevron{width:24px;height:24px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--grad);color:#04121a;font-size:16px;transition:transform .22s}
+.faq-item.open .faq-chevron{transform:rotate(180deg)}
+.faq-answer{display:none;padding:0 18px 16px 62px;color:var(--mute);font-size:13px;line-height:1.65}
+.faq-item.open .faq-answer{display:block;animation:fade .18s both}
+.faq-answer strong{color:var(--a1)}
+.faq-help{margin:10px 0 0;padding:22px 18px 24px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.faq-help h3{font-size:16px;margin-bottom:7px;color:var(--text)}
+.faq-help p{font-size:12px;color:var(--mute);margin-bottom:16px}
+.faq-help .btn{padding:15px 16px;border-radius:14px;background:var(--grad);color:#04121a;font-size:15px}
+.faq-back{border:0;background:none;color:var(--a1);font-size:13px;padding:8px 0 14px;cursor:pointer}
+.faq-search{display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:0 14px;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:border-color .2s}
+.faq-search:focus-within{border-color:rgba(0,180,216,.55)}
+.faq-search span{color:var(--mute);font-size:16px}
+.faq-search input{margin:0;border:0;background:none;padding:14px 0;border-radius:0;font-size:14px;outline:none}
+.faq-empty{display:none;margin:10px 0;padding:18px;text-align:center;color:var(--mute);font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.faq-title{font-size:24px;font-weight:800;margin:4px 0 4px}
+.faq-sub{color:var(--mute);font-size:13px;margin-bottom:14px}
+.g-hero{margin:0 0 6px;padding:26px 18px;border-radius:22px;border:1px solid var(--line);background:radial-gradient(80% 140% at 0% 0%,rgba(0,180,216,.28),transparent 60%),var(--card)}
+.g-hero h2{font-size:28px;margin:0 0 4px}.g-hero p{color:var(--mute);font-size:14px}
+.g-sec{padding:20px 4px;border-bottom:1px solid var(--line);animation:rise .45s both}
+.g-num{color:#9b83ff;font-size:11px;font-weight:800;letter-spacing:.14em;margin-bottom:8px;text-transform:uppercase}
+.g-sec h3{font-size:21px;line-height:1.2;margin-bottom:10px}
+.g-sec p{color:var(--mute);font-size:14px;line-height:1.6}.g-sec p b{color:var(--text)}
+.g-q{color:var(--text);font-size:15px;margin-bottom:6px}
+.g-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.g-tag{border:1px solid rgba(0,180,216,.4);background:rgba(0,180,216,.08);color:var(--a1);border-radius:20px;padding:9px 14px;font-size:13px;font-weight:600}
+.g-cta{padding:20px 4px 0}.g-cta p{font-weight:700;font-size:15px;line-height:1.5;margin-bottom:14px}
+.g-btns{display:flex;gap:10px}.g-btns .btn{flex:1;border-radius:16px;padding:15px 10px}
+.g-btns .btn.ghost{border-color:rgba(0,180,216,.55);color:var(--a1)}
+.h-title{font-size:26px;font-weight:800;margin:4px 0 4px}
+.h-sub{color:var(--mute);font-size:14px;margin-bottom:18px}
+.h-ttl{font-weight:800;line-height:1.15;background:linear-gradient(90deg,#8fd0ff,#4d9bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-h{font-size:20px;font-weight:800;margin:26px 0 14px}
+.h-step{position:relative;display:flex;gap:14px;padding-bottom:22px;animation:rise .45s both}
+.h-step::before{content:"";position:absolute;left:21px;top:50px;bottom:4px;width:2px;border-radius:2px;background:linear-gradient(#00b4d8,#4d6bff);opacity:.55}
+.h-step:last-of-type::before{display:none}
+.h-ico{width:44px;height:44px;flex:none;border-radius:14px;border:1px solid rgba(0,180,216,.4);background:rgba(0,180,216,.08);display:flex;align-items:center;justify-content:center;font-size:20px;position:relative;z-index:1}
+.h-body{flex:1;min-width:0}
+.h-n{color:#9b83ff;font-size:11px;font-weight:800;letter-spacing:.14em;margin:2px 0 6px}
+.h-body .h-ttl{font-size:21px;margin-bottom:8px}
+.h-body p,.h-card p{color:var(--mute);font-size:14px;line-height:1.6}
+.h-mini{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.h-mini div{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px}
+.h-mini b{display:block;color:var(--a1);font-size:15px;margin-bottom:4px}
+.h-mini span{color:var(--mute);font-size:12px;line-height:1.45;display:block}
+.h-tip{display:flex;gap:10px;margin-top:12px;padding:12px;border:1px solid rgba(0,180,216,.4);border-radius:16px;background:rgba(0,180,216,.05);color:var(--mute);font-size:13px;line-height:1.5}
+.h-tip b{color:var(--a1)}
+.h-card{display:flex;gap:14px;margin-bottom:12px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:20px;animation:rise .45s both}
+.h-card .h-ttl{font-size:20px;margin-bottom:8px}
+.h-card ol{margin:0;padding-left:18px;color:var(--mute);font-size:14px;line-height:1.7}
+.h-go{margin-top:6px}
+@media(min-width:700px){.faq-content{padding-left:24px;padding-right:24px}.faq-answer{font-size:14px}}
+
 </style>
 </head>
 <body>
@@ -95,66 +180,124 @@ input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--l
 <main id="view"></main>
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div id="sheetBody"></div></div>
+
+<div class="faq-page" id="faqPage" aria-hidden="true">
+  <div class="faq-head">
+    <div class="faq-brand">KzApple</div>
+    <div class="faq-pvz">ВАШ ПВЗ<b id="faqPvz">Не указан</b></div>
+  </div>
+  <div class="faq-content">
+    <button class="faq-back" onclick="closeFaq()">← Вернуться в профиль</button>
+    <div class="faq-title">Информация</div>
+    <div class="faq-sub">Информация в ознакомительных целях</div>
+    <label class="faq-search"><span>⌕</span><input id="faqSearch" type="search" placeholder="Поиск по вопросам" autocomplete="off" oninput="renderFaq(this.value)"></label>
+    <div class="faq-intro">Важно: все процессы завязаны на алгоритмы, а не на вас. Вы просто забираете товар.</div>
+    <div id="faqItems"></div>
+    <div class="faq-empty" id="faqEmpty">Ничего не найдено. Напишите в поддержку — ответим лично.</div>
+    <div class="faq-help">
+      <h3>Нужна дополнительная помощь?</h3>
+      <p>Не нашли ответ на свой вопрос? Обратитесь в поддержку</p>
+      <button class="btn" onclick="contactSupport()">Обратиться в поддержку</button>
+    </div>
+  </div>
+</div>
+
+<div class="faq-page" id="gPage" aria-hidden="true">
+  <div class="faq-head"><div class="faq-brand">KzApple</div><div class="faq-pvz">ВАШ ПВЗ<b id="gPvz">Не указан</b></div></div>
+  <div class="faq-content">
+    <button class="faq-back" onclick="closeG()">← Вернуться в профиль</button>
+    <div class="g-hero"><h2>Наши гарантии</h2><p>Коротко и честно — как мы работаем</p></div>
+    <div id="gBody"></div>
+  </div>
+</div>
+
+<div class="faq-page" id="hPage" aria-hidden="true">
+  <div class="faq-head"><div class="faq-brand">KzApple</div><div class="faq-pvz">ВАШ ПВЗ<b id="hPvz">Не указан</b></div></div>
+  <div class="faq-content">
+    <button class="faq-back" onclick="closeH()">← Вернуться в профиль</button>
+    <div class="h-title">Как всё работает?</div>
+    <div class="h-sub">Пошагово: от заказа до получения</div>
+    <div id="hBody"></div>
+  </div>
+</div>
+
+<div class="review-notice" id="reviewNotice" role="dialog" aria-modal="true" aria-labelledby="reviewNoticeTitle" onclick="if(event.target===this)closeReviewNotice()"><div class="review-notice-box"><button class="review-notice-close" aria-label="Закрыть" onclick="closeReviewNotice()">×</button><h3 id="reviewNoticeTitle">🔒 Не пишите автору отзыва</h3><p>Ни при каких обстоятельствах не допускается самостоятельно связываться с клиентами вне предусмотренных каналов связи, искать их контактные данные или пытаться установить личный контакт. Это категорически запрещено внутренними правилами сервиса.</p><p>Нарушение данного требования может повлечь блокировку и отказ в дальнейшем обслуживании. Безопасность и конфиденциальность наших клиентов для нас всегда остаются на первом месте.</p></div></div>
 <div class="welcome" id="welcome"><div class="hi">Добро пожаловать</div><div class="name" id="wname"></div><div class="tag">Магазин настоящих сплитеров!</div><div class="wuser" id="wuser"></div><div class="bot"><button class="btn" onclick="startApp()">Начать</button><div class="legal">Нажимая на кнопку, вы соглашаетесь со всеми <u onclick="rules()">правилами сервиса</u></div></div></div>
 <script>
 // ============ НАСТРОЙКИ МАГАЗИНА ============
 const BRAND = "KzApple";
 const SUPPORT = "https://t.me/xomvape";
 const CITIES = ["Алматы","Астана","Шымкент","Караганда","Актобе","Атырау","Павлодар","Костанай"];
-const RATE = 5.31;        // курс: сколько тенге в 1 рубле (НБ РК, октябрь 2026). Меняйте при изменении курса
 const PHOTO = "photos/";  // папка с фото в репозитории
 const HERO_TEXT = "Выбери модель, оплати частями и забери в удобном пункте выдачи.";  // можно дописать только правдивые фразы
 const RULES = "Опишите правила сервиса: условия заказа, оплаты, сплита, возврата и гарантии.";
-const PVZ_TYPES = ["Wildberries","СДЭК"];   // службы выдачи, которые можно выбрать
-const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и пункт выдачи (Wildberries или СДЭК) и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
+const PVZ_TYPES = ["Wildberries"];   // службы выдачи, которые можно выбрать
+const HOW = "1. Выберите телефон и нажмите «Выбрать».<br>2. Укажите город и пункт выдачи (Wildberries) и оформите заказ.<br>3. Менеджер свяжется с вами в Telegram и согласует оплату и сплит.<br>4. Заберите телефон в пункте выдачи.";
 
 // ============ ТОВАРЫ ============
-// Один телефон = одна строка. Цены в РУБЛЯХ, в тенге пересчитываются сами по RATE.
+// Один телефон = одна строка.
 //   Обычная цена:       add("iPhone 17","256 ГБ","Чёрный",79990,"17black.png");
 //   Со скидкой:         add("iPhone 17","256 ГБ","Чёрный",[прежняя_цена, настоящая_цена],"17black.png");
 //                       первая цена показывается перечёркнутой, вторая - настоящая (прежняя должна быть выше)
-// Необязательно в конце: {cond:"Хорошее", bat:91, sold:true}
-//   cond  состояние,  bat  батарея в %,  sold:true  продан (скрыть)
+// Необязательно в конце: {sold:true} — товар продан (скрыть)
 const PRODUCTS = [];
-function add(model, mem, color, rub, img, extra={}){
-  const [o, n] = Array.isArray(rub) ? rub : [0, rub];
-  const conv = r => Math.round(r*RATE/100)*100;
-  const price = conv(n), old = o && conv(o) > price ? conv(o) : 0;
+// Цены указываются в ТЕНГЕ.
+//   Обычная цена: add("iPhone 17","256 ГБ","Чёрный",424700,"17black.png");
+//   Со скидкой:   add("iPhone 17","256 ГБ","Чёрный",[470000,424700],"17black.png");
+function add(model, mem, color, kzt, img, extra={}){
+  const [o, n] = Array.isArray(kzt) ? kzt : [0, kzt];
+  const price = n, old = o > n ? o : 0;
   PRODUCTS.push({id:"p"+PRODUCTS.length, model, mem, color, price, old, img:img?PHOTO+img:"", ...extra});
 }
-add("iPhone 17","256 ГБ","Чёрный",79990,"17black.png");
-add("iPhone 16 Pro","512 ГБ","Чёрный",82000,"16pro.png");
-add("iPhone 17 Air","512 ГБ","Чёрный",84000,"17airblack.png");
-add("iPhone 17 Air","256 ГБ","Синий",75000,"17airblue.png");
-add("iPhone 17 Pro Max","1 ТБ","Чёрный",143000,"iphone17pr_maxblack.png");
-add("iPhone 17 Pro Max","512 ГБ","Оранжевый",140000,"iphone17promaxorange.png");
-add("iPhone 17 Pro","256 ГБ","Чёрный",105000,"iphone17pr_maxblack.png");
-add("iPhone 17 Pro","512 ГБ","Белый",125000,"iphone17promaxwhite.png");
-add("iPhone 17 Pro Max","512 ГБ","Белый",136000,"iphone17promaxwhite.png");
-add("iPhone 17 Pro","256 ГБ","Белый",103000,"iphone17promaxwhite.png");
-add("iPhone 17 Air","256 ГБ","Белый",75000,"17airwhite.png");
-add("iPhone 17 Pro","256 ГБ","Оранжевый",134000,"iphone17promaxorange.png");
-add("iPhone 16 Pro Max","512 ГБ","Чёрный",131000,"16pro.png");
-add("iPhone 17 Air","256 ГБ","Чёрный",77000,"17airblack.png");
-add("iPhone 18 Pro","256 ГБ","Чёрный",140000,"18promaxblack.png");
-add("iPhone 18 Pro","512 ГБ","Чёрный",149000,"18promaxblack.png");
-add("iPhone 18 Pro","256 ГБ","Белый",142000,"18promax_white.png");
-add("iPhone 18 Pro","512 ГБ","Красный",170000,"18promaxred.png");
-add("iPhone 17 Pro Max","512 ГБ","Чёрный",135000,"iphone17pr_maxblack.png");
-add("iPhone 18 Pro Max","256 ГБ","Красный",210000,"18promaxred.png");
-add("iPhone 18 Pro Max","512 ГБ","Красный",200000,"18promaxred.png");
-add("iPhone 17","256 ГБ","Зелёный",80000,"17green.png");
-add("iPhone 17","256 ГБ","Синий",82000,"17blue.png");
-add("iPhone 18 Pro Max","512 ГБ","Чёрный",189000,"18promaxblack.png");
-add("iPhone 18 Pro Max","512 ГБ","Ice",200000,"18promaxice.png");
-add("iPhone 18 Pro","256 ГБ","Ice",139000,"18promaxice.png");
-add("iPhone 18 Pro","512 ГБ","Красный",145000,"18promaxred.png");
-add("iPhone Duo","256 ГБ","Чёрный",254000,"iphoneduoblack.png");
-add("iPhone Duo","256 ГБ","Белый",254000,"iphoneduowhite.png");
-
-const REVIEWS = [];   // реальные отзывы клиентов: {name:"Айдос", date:"06.11.2026", stars:5, text:"..."}
+add("iPhone 16 Pro","512 ГБ","Чёрный",145000,"16pro.png");
+add("iPhone 17 Air","512 ГБ","Чёрный",138100,"17airblack.png");
+add("iPhone 17 Air","256 ГБ","Синий",127400,"17airblue.png");
+add("iPhone 17 Pro Max","1 ТБ","Чёрный",217700,"iphone17pr_maxblack.png");
+add("iPhone 17 Pro Max","512 ГБ","Оранжевый",223000,"iphone17promaxorange.png");
+add("iPhone 17 Pro","256 ГБ","Чёрный",169900,"iphone17pr_maxblack.png");
+add("iPhone 17 Pro","512 ГБ","Белый",180500,"iphone17promaxwhite.png");
+add("iPhone 17 Pro Max","512 ГБ","Белый",196500,"iphone17promaxwhite.png");
+add("iPhone 17 Pro","256 ГБ","Белый",169900,"iphone17promaxwhite.png");
+add("iPhone 17 Air","256 ГБ","Белый",127400,"17airwhite.png");
+add("iPhone 17 Pro","256 ГБ","Оранжевый",180500,"iphone17promaxorange.png");
+add("iPhone 16 Pro Max","512 ГБ","Чёрный",160600,"16pro.png");
+add("iPhone 17 Air","256 ГБ","Чёрный",130100,"17airblack.png");
+add("iPhone 18 Pro","256 ГБ","Чёрный",265500,"18promaxblack.png");
+add("iPhone 18 Pro","512 ГБ","Чёрный",302700,"18promaxblack.png");
+add("iPhone 18 Pro","256 ГБ","Белый",276100,"18promax_white.png");
+add("iPhone 18 Pro","512 ГБ","Красный",318600,"18promaxred.png");
+add("iPhone 17 Pro Max","512 ГБ","Чёрный",201800,"iphone17pr_maxblack.png");
+add("iPhone 18 Pro Max","256 ГБ","Красный",329200,"18promaxred.png");
+add("iPhone 18 Pro Max","512 ГБ","Красный",361100,"18promaxred.png");
+add("iPhone 17","256 ГБ","Зелёный",127400,"17green.png");
+add("iPhone 17","256 ГБ","Синий",127400,"17blue.png");
+add("iPhone 18 Pro Max","512 ГБ","Чёрный",318600,"18promaxblack.png");
+add("iPhone 18 Pro Max","512 ГБ","Ice",361100,"18promaxice.png");
+add("iPhone 16 Pro","512 ГБ","Чёрный",135400,"16pro.png");
+add("iPhone 18 Pro","256 ГБ","Ice",265500,"18promaxice.png");
+add("iPhone 18 Pro","512 ГБ","Красный",281400,"18promaxred.png");
+add("iPhone Duo","256 ГБ","Чёрный",552200,"iphoneduoblack.png");
+const REVIEWS = [   // реальные отзывы клиентов: {name:"Айдос", date:"06.11.2026", stars:5, text:"...", img:"review1.jpg"}  (img - необязательное фото из папки photos/)
+  {name:"Тест", date:"19.11.2026", stars:5, text:"Тестовый отзыв: проверка фото. Удалите перед запуском.", img:"review1.jpg"},
+  {name:"Тест 2", date:"19.11.2026", stars:5, text:"Тестовый отзыв 2: проверка вёрстки. Удалите перед запуском.", img:"review2.jpg"},
+  {name:"Тест 3", date:"18.11.2026", stars:5, text:"Тестовый отзыв 3: проверка вёрстки. Удалите перед запуском.", img:"review3.jpg"},
+  {name:"Тест 4", date:"17.11.2026", stars:4, text:"Тестовый отзыв 4: проверка вёрстки. Удалите перед запуском.", img:"review4.jpg"},
+  {name:"Тест 5", date:"16.11.2026", stars:5, text:"Тестовый отзыв 5: проверка вёрстки. Удалите перед запуском.", img:"review5.jpg"},
+  {name:"Тест 6", date:"15.11.2026", stars:5, text:"Тестовый отзыв 6: проверка вёрстки. Удалите перед запуском.", img:"review6.jpg"},
+  {name:"Тест 7", date:"14.11.2026", stars:4, text:"Тестовый отзыв 7: проверка вёрстки. Удалите перед запуском.", img:"review7.jpg"},
+  {name:"Тест 8", date:"13.11.2026", stars:5, text:"Тестовый отзыв 8: проверка вёрстки. Удалите перед запуском.", img:"review8.jpg"},
+  {name:"Тест 9", date:"12.11.2026", stars:5, text:"Тестовый отзыв 9: проверка вёрстки. Удалите перед запуском.", img:"review9.jpg"},
+  {name:"Тест 10", date:"11.11.2026", stars:5, text:"Тестовый отзыв 10: проверка вёрстки. Удалите перед запуском.", img:"review10.jpg"},
+  {name:"Тест 11", date:"10.11.2026", stars:4, text:"Тестовый отзыв 11: проверка вёрстки. Удалите перед запуском.", img:"review11.jpg"},
+  {name:"Тест 12", date:"09.11.2026", stars:5, text:"Тестовый отзыв 12: проверка вёрстки. Удалите перед запуском.", img:"review12.jpg"},
+  {name:"Тест 13", date:"08.11.2026", stars:5, text:"Тестовый отзыв 13: проверка вёрстки. Удалите перед запуском.", img:"review13.jpg"},
+  {name:"Тест 14", date:"07.11.2026", stars:4, text:"Тестовый отзыв 14: проверка вёрстки. Удалите перед запуском.", img:"review14.jpg"},
+  {name:"Тест 15", date:"06.11.2026", stars:5, text:"Тестовый отзыв 15: проверка вёрстки. Удалите перед запуском.", img:"review15.jpg"},
+  {name:"Тест 16", date:"05.11.2026", stars:5, text:"Тестовый отзыв 16: проверка вёрстки. Удалите перед запуском.", img:"review16.jpg"},
+  {name:"Тест 17", date:"04.11.2026", stars:5, text:"Тестовый отзыв 17: проверка вёрстки. Удалите перед запуском.", img:"review17.jpg"}
+];
 const GUARANTEE = "Опишите гарантию на телефоны: срок, что входит, условия возврата.";
-const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на б/у телефоны."]];
+const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на новые телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
 function getUser(){
@@ -218,7 +361,7 @@ function buy(id){
   if(!pvz){ pending=id; $("#pvz").click(); return; }
   if(tg?.initDataUnsafe?.query_id) return openSheet("<h2>Откройте через чат</h2><p>Чтобы заказ дошёл до менеджера, откройте магазин кнопкой «Открыть магазин» внизу чата с ботом (команда /start). Эта кнопка рядом с полем ввода нужна для профиля.</p>");
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-  const name = `${title(p)} (${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""})`;
+  const name = title(p);
   const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvzFull(pvz)};
   orders.unshift(o); store("orders",orders);
   try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
@@ -229,25 +372,38 @@ function buy(id){
 function imgErr(el,src){ if(!el.dataset.t && src.includes("_")){ el.dataset.t=1; el.src=src.replace(/_/g," "); } else el.replaceWith(document.createTextNode("📱")); }
 function choose(id){
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-  openSheet(`<h2>${p.model}</h2><p>${p.mem} · ${p.color} · ${p.cond||"Б/у"}${p.bat?`, АКБ ${p.bat}%`:""}</p>${p.old?`<div class="old" style="margin-top:10px">${money(p.old)}</div>`:""}<div class="price" style="margin:4px 0 10px">${money(p.price)}</div><p style="color:var(--mute);margin:10px 0 14px">Пункт выдачи: ${pvz?esc(pvzFull(pvz)):"не выбран"}</p><button class="btn" onclick="buy('${p.id}')">Оформить заказ</button>`);
+  openSheet(`<h2>${p.model}</h2><p>${p.mem} · ${p.color}</p>${p.old?`<div class="old" style="margin-top:10px">${money(p.old)}</div>`:""}<div class="price" style="margin:4px 0 10px">${money(p.price)}</div><p style="color:var(--mute);margin:10px 0 14px">Пункт выдачи: ${pvz?esc(pvzFull(pvz)):"не выбран"}</p><button class="btn" onclick="buy('${p.id}')">Оформить заказ</button>`);
 }
 function renderCatalog(){
   const list = PRODUCTS.filter(p=>!p.sold);
   const models = ["Все", ...new Set(list.map(p=>p.model))];
   if(!models.includes(flt)) flt = "Все";
   const shown = list.filter(p=>flt==="Все"||p.model===flt);
-  const hero = `<section class="hh"><div class="eyebrow">СПЛИТ · Б/У · НОВЫЕ</div><h1>iPhone в сплит и б/у — выбирай и забирай</h1><p>${HERO_TEXT}</p><div class="hbtns"><button class="btn" onclick="$('#cat').scrollIntoView({behavior:'smooth'})">Смотреть каталог</button><button class="btn ghost" onclick="how()">Как работает сплит</button></div><div class="hvis"><img src="${PHOTO}bio.png" alt="" onerror="this.parentNode.remove()"></div></section>`;
+  const hero = `<section class="hh"><div class="eyebrow">СПЛИТ · НОВЫЕ</div><h1>Новые iPhone в сплит — выбирай и забирай</h1><p>${HERO_TEXT}</p><div class="hbtns"><button class="btn" onclick="$('#cat').scrollIntoView({behavior:'smooth'})">Смотреть каталог</button><button class="btn ghost" onclick="how()">Как работает сплит</button></div><div class="hvis"><img src="${PHOTO}bio.png" alt="" onerror="this.parentNode.remove()"></div></section>`;
   const chips = `<div class="chips">${models.map(m=>`<div class="chip ${m===flt?'on':''}" onclick="flt='${m}';render()">${m}</div>`).join("")}</div>`;
-  const cards = shown.map((p,i)=>`<div class="pc" style="--i:${Math.min(i,8)}"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="imgErr(this,'${p.img}')">`:"📱"}</div><b>${p.model}</b><small>${p.mem} · ${p.color}</small><small>${p.cond||"Б/у"}${p.bat?` · АКБ ${p.bat}%`:""}</small><div class="old">${p.old?money(p.old):"&nbsp;"}</div><div class="price">${money(p.price)}</div><button class="btn" onclick="choose('${p.id}')">Выбрать</button></div>`).join("");
+  const cards = shown.map((p,i)=>`<div class="pc" style="--i:${Math.min(i,8)}"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="imgErr(this,'${p.img}')">`:"📱"}</div><b>${p.model}</b><small>${p.mem} · ${p.color}</small><div class="old">${p.old?money(p.old):"&nbsp;"}</div><div class="price">${money(p.price)}</div><button class="btn" onclick="choose('${p.id}')">Выбрать</button></div>`).join("");
   return hero + `<div class="sec" id="cat">Каталог</div>` + chips + (cards ? `<div class="grid">${cards}</div>` : `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
 }
 function renderOrders(){
   if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет.</div>`;
   return `<h2>История заказов</h2>`+orders.map((o,i)=>`<div class="row" style="--i:${Math.min(i,8)}"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${esc(o.city)}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
 }
+function reviewColor(name){
+  const palette=["#8056d9","#087f75","#3769bd","#b05c83","#a36b32","#5865a8","#39805a"];
+  let hash=0; for(const ch of String(name)) hash=(hash*31+ch.charCodeAt(0))|0;
+  return palette[Math.abs(hash)%palette.length];
+}
+function showReviewNotice(){
+  const modal=$("#reviewNotice"); modal.classList.add("show");
+}
+function closeReviewNotice(){ $("#reviewNotice").classList.remove("show"); }
 function renderReviews(){
   const head = REVIEWS.length ? `<div class="row"><div><div class="big">${(REVIEWS.reduce((s,r)=>s+r.stars,0)/REVIEWS.length).toFixed(1)}</div><small>${REVIEWS.length} отзывов</small></div></div>` : `<div class="note">Отзывов пока нет. Станьте первым после получения заказа.</div>`;
-  return `<h2>Отзывы</h2>${head}<button class="btn" onclick="reviewForm()">Оставить отзыв</button><br><br>`+REVIEWS.map(r=>`<div class="row"><div><b>${r.name}</b> <small>${r.date}</small>${"★".repeat(r.stars)}<br>${r.text}</div></div>`).join("");
+  const cards=REVIEWS.map(r=>{
+    const name=esc(r.name||"Покупатель"), initial=esc((r.name||"П").trim().charAt(0).toUpperCase());
+    return `<article class="review-card"><div class="review-top"><button class="review-person" type="button" onclick="showReviewNotice()"><span class="review-avatar" style="background:${reviewColor(r.name||'Покупатель')}">${initial}</span><span><b>${name}</b><small class="review-verified">✓ Подтверждённая покупка</small></span></button><time class="review-date">${esc(r.date||"")}</time></div><div class="review-stars" aria-label="${r.stars} из 5">${"★".repeat(Math.max(0,Math.min(5,Number(r.stars)||0)))}</div><div class="review-text">${esc(r.text||"")}</div>${r.img?`<img class="rimg" src="${PHOTO}${esc(r.img)}" alt="Фото к отзыву" onerror="this.remove()">`:""}</article>`;
+  }).join("");
+  return `<h2>Отзывы</h2>${head}<button class="btn" onclick="reviewForm()">Оставить отзыв</button><br><br>${cards}`;
 }
 function reviewForm(){
   if(!orders.some(o=>o.status==="Выдан")) return openSheet("<h2>Пока нельзя</h2><p>Отзыв можно оставить после получения заказа.</p>");
@@ -259,11 +415,81 @@ function renderProfile(){
   return `<h2>Профиль</h2>${user.id?"":`<div class="note">Не удалось получить данные Telegram. Закройте магазин и откройте его заново кнопкой «Открыть магазин» в боте (команда /start).</div>`}<div class="row" style="justify-content:flex-start;gap:14px"><div class="ava">${ava}</div><div><b style="font-size:18px">${esc(nm)}</b><small style="color:var(--a1)">${user.username?'@'+esc(user.username):'username не указан'}</small><small>ID: ${user.id}</small></div></div>`+
    link("Поддержка","Нужна помощь? Пишите","tg?.openTelegramLink(SUPPORT)",1)+
    link("Частые вопросы","Ответы на вопросы","faq()",2)+
-   link("Как всё работает","От заказа до получения","how()",3)+
+   link("Как всё работает","От заказа до получения","howPage()",3)+
    link("Пункт выдачи",pvz?esc(pvzFull(pvz)):"Не выбран","$('#pvz').click()",4)+
-   link("Наши гарантии","Условия гарантии и возврата","openSheet('<h2>Гарантии</h2><p>'+GUARANTEE+'</p>')",5);
+   link("Наши гарантии","Условия гарантии и возврата","guarantees()",5);
 }
-function faq(){ openSheet("<h2>Частые вопросы</h2>"+FAQ.map(([q,a])=>`<p><b>${q}</b><br>${a}</p>`).join("")); }
+
+const FAQ_ITEMS = [
+  {icon:"♙", q:"Могут ли заблокировать телефон, купленный в сплит по IMEI", a:'<strong>Этот вопрос зависит от правил оператора, продавца и статуса устройства.</strong> Перед публикацией уточните у менеджера официальные условия проверки и регистрации IMEI.'},
+  {icon:"⬡", q:"Что делать, если придёт повреждённый или неисправный товар?", a:"В таком случае выбор остаётся за вами: мы предложим замену на новый товар или возврат денежных средств. Просто обратитесь в нашу службу поддержки, и мы поможем решить вопрос."},
+  {icon:"⬡", q:"Как вернуть товар, если нашли брак или пришло не то?", a:"Если нашли проблему при получении в пункте выдачи или у сотрудника пункта выдачи, зафиксируйте её и свяжитесь с поддержкой. Не забирайте товар, если обнаружили несоответствие, до согласования дальнейших действий."},
+  {icon:"✓", q:"Как проходит заказ и что от меня требуется?", a:"Вы выбираете модель, указываете город и пункт выдачи и оформляете заказ. <strong>Менеджер свяжется с вами в Telegram</strong> и согласует оплату и условия сплита — все условия вы узнаёте до оплаты. Затем забираете телефон в пункте выдачи. Подробности — в разделе «Как всё работает» и в правилах сервиса."},
+  {icon:"★", q:"Как убедиться, что магазину можно доверять?", a:"Изучите раздел «Отзывы», правила сервиса и этот раздел. Мы не просим переводить деньги до того, как вы получили и поняли все условия. Если что-то остаётся неясным — задайте вопрос менеджеру или в поддержке и заказывайте только тогда, когда всё понятно."},
+  {icon:"▤", q:"Куда и когда вернутся деньги за возврат", a:"Денежные средства возвращаются тем же способом, которым была произведена оплата:<br>• Оплата банковской картой — возврат на ту же карту.<br>• Для других способов оплаты порядок возврата согласовывается с поддержкой.<br><br>Возврат осуществляется после обработки обращения в установленные сроки."}
+];
+function faq(){
+  const page=$("#faqPage");
+  $("#faqPvz").textContent=pvz?pvz.city+" · "+pvz.type:"Не указан";
+  $("#faqSearch").value="";
+  renderFaq("");
+  page.classList.add("show");page.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+}
+function renderFaq(qs){
+  qs=(qs||"").trim().toLowerCase();
+  const list=FAQ_ITEMS.filter(it=>!qs||(it.q+" "+it.a.replace(/<[^>]+>/g," ")).toLowerCase().includes(qs));
+  $("#faqEmpty").style.display=list.length?"none":"block";
+  $("#faqItems").innerHTML=list.map((item,i)=>`<section class="faq-item ${(qs||i===0)?"open":""}">
+    <button class="faq-question" type="button" aria-expanded="${i===0}" onclick="toggleFaqItem(this)">
+      <span class="faq-icon">${item.icon}</span><span class="faq-qtext">${item.q}</span><span class="faq-chevron">⌄</span>
+    </button><div class="faq-answer">${item.a}</div></section>`).join("");
+}
+function toggleFaqItem(btn){
+  const item=btn.closest(".faq-item"), wasOpen=item.classList.contains("open");
+  document.querySelectorAll(".faq-item.open").forEach(el=>{el.classList.remove("open");el.querySelector(".faq-question").setAttribute("aria-expanded","false")});
+  if(!wasOpen){item.classList.add("open");btn.setAttribute("aria-expanded","true")}
+}
+function closeFaq(){const page=$("#faqPage");page.classList.remove("show");page.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+function contactSupport(){if(tg?.openTelegramLink)tg.openTelegramLink(SUPPORT);else window.open(SUPPORT,"_blank")}
+
+const G_SECTIONS = [   // тексты можно менять: пишите только то, что реально выполняете
+  {n:"01 · Нам регулярно пишут", html:'<div class="g-q">«Какие у вас гарантии?»</div><div class="g-q">«Можно ли оплатить частями?»</div><div class="g-q">«Как проходит заказ?»</div><p style="margin-top:8px">Все условия оплаты и сплита менеджер согласует с вами <b>до оплаты</b>. Они одинаковы для всех покупателей.</p>'},
+  {n:"02 · Что мы вам даём", html:'<h3>Понятные условия заранее</h3><div class="g-tags"><span class="g-tag">Правила сервиса</span><span class="g-tag">Ответы в разделе «Частые вопросы»</span><span class="g-tag">Поддержка в Telegram</span><span class="g-tag">Возврат по правилам</span></div>'},
+  {n:"03 · Главное", html:'<h3>Мы не обещаем «100% гарантий» — мы показываем результаты</h3><p>В интернете любые громкие слова — всего лишь слова. Лучшее, что можно проверить самому, — это <b>отзывы покупателей</b> и прозрачные условия.</p>'},
+  {n:"04 · Наши гарантии", html:'<h3>Отзывы и репутация</h3><p>Читайте отзывы, задавайте вопросы менеджеру и сравнивайте. Если для вас этого недостаточно — это нормальное решение, и торопиться с заказом не нужно.</p>'},
+  {n:"05 · Выбор за вами", html:'<h3>Не уверены — не заказывайте</h3><p>Мы никого не уговариваем и не торопим с оплатой. Заказывайте, когда изучили условия и вам всё понятно.</p>'}
+];
+function guarantees(){
+  $("#gPvz").textContent=pvz?pvz.city+" · "+pvz.type:"Не указан";
+  $("#gBody").innerHTML=G_SECTIONS.map((g,i)=>`<section class="g-sec" style="animation-delay:${i*60}ms"><div class="g-num">${g.n}</div>${g.html}</section>`).join("")+
+    `<div class="g-cta"><p>А тем, кто изучил наш канал, отзывы, раздел «Частые вопросы» и готов оформить заказ, мы всегда рады.</p><div class="g-btns"><button class="btn ghost" onclick="closeG();go('reviews')">Отзывы</button><button class="btn" onclick="closeG();go('catalog')">В каталог</button></div></div>`;
+  const page=$("#gPage"); page.classList.add("show"); page.setAttribute("aria-hidden","false"); page.scrollTop=0; document.body.style.overflow="hidden";
+}
+function closeG(){const page=$("#gPage");page.classList.remove("show");page.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+const H_STEPS = [   // тексты можно менять: пишите только то, как реально проходит заказ
+  {icon:"🛍", t:"Выберите товар", p:"Откройте каталог и выберите модель, память и цвет."},
+  {icon:"📍", t:"Укажите ПВЗ Wildberries", p:"Выберите город и укажите адрес пункта выдачи. Если нужного ПВЗ нет в списке, введите адрес вручную."},
+  {icon:"💳", t:"Оплатите заказ", p:"Менеджер свяжется с вами в Telegram и согласует оплату и условия сплита. Заказ оформляется на ваш ПВЗ после подтверждения оплаты.",
+   mini:[["Статус","Этапы заказа видны в разделе «Заказы»"],["Связь","Менеджер на связи в Telegram"],["Условия","Все условия согласуются до оплаты"],["Помощь","Поддержка в разделе «Профиль»"]],
+   tip:"<b>Не оплачивайте</b>, пока вам не понятны все условия. Любой вопрос можно задать менеджеру."},
+  {icon:"📋", t:"Менеджер оформляет заказ", p:"После оплаты менеджер оформляет заказ на ваш ПВЗ и при необходимости уточняет детали.", tip:"Если менеджер написал — ответьте ему, так заказ оформится быстрее."},
+  {icon:"🚚", t:"Следите за статусом", p:"Статус заказа отображается в разделе «Заказы». Если что-то непонятно — напишите в поддержку."},
+  {icon:"🔔", t:"Заказ прибыл", p:"Мы сообщим, когда заказ будет в пункте выдачи."}
+];
+const H_PICK = [
+  {icon:"🚶", t:"Самостоятельно", p:"Приходите на ПВЗ и получите заказ по коду получения. Проверьте товар до получения; если что-то не так — не забирайте и свяжитесь с поддержкой."},
+  {icon:"🛵", t:"Курьером", p:"Уточните у менеджера, доступна ли доставка курьером для вашего ПВЗ."}
+];
+const H_NEED = ["Выбрать товар","Указать реальный адрес ПВЗ Wildberries","Оплатить заказ на согласованных условиях","Дождаться оформления и следить за статусом","Забрать заказ на ПВЗ и проверить товар"];
+function howPage(){
+  $("#hPvz").textContent=pvz?pvz.city+" · "+pvz.type:"Не указан";
+  const steps=H_STEPS.map((x,i)=>`<div class="h-step" style="animation-delay:${i*50}ms"><div class="h-ico">${x.icon}</div><div class="h-body"><div class="h-n">ШАГ ${i+1}</div><div class="h-ttl">${x.t}</div><p>${x.p}</p>${x.mini?`<div class="h-mini">${x.mini.map(m=>`<div><b>${m[0]}</b><span>${m[1]}</span></div>`).join("")}</div>`:""}${x.tip?`<div class="h-tip"><span>💡</span><span>${x.tip}</span></div>`:""}</div></div>`).join("");
+  const pick=H_PICK.map(x=>`<div class="h-card"><div class="h-ico">${x.icon}</div><div><div class="h-ttl">${x.t}</div><p>${x.p}</p></div></div>`).join("");
+  const need=`<div class="h-card"><div class="h-ico">✓</div><div><div class="h-ttl">Что нужно от вас</div><ol>${H_NEED.map(n=>`<li>${n}</li>`).join("")}</ol><div class="h-tip"><span>💡</span><span>Остались вопросы? Напишите в <b>поддержку</b> — она в разделе «Профиль».</span></div></div></div>`;
+  $("#hBody").innerHTML=`<div class="h-h" style="margin-top:6px">Как оформить заказ</div>${steps}<div class="h-h">Как забрать заказ</div>${pick}${need}<button class="btn h-go" onclick="closeH();go('catalog')">Перейти в каталог</button>`;
+  const page=$("#hPage"); page.classList.add("show"); page.setAttribute("aria-hidden","false"); page.scrollTop=0; document.body.style.overflow="hidden";
+}
+function closeH(){const page=$("#hPage");page.classList.remove("show");page.setAttribute("aria-hidden","true");document.body.style.overflow=""}
 function how(){ openSheet("<h2>Как работает сплит</h2><p>"+HOW+"</p>"); }
 
 function render(){
