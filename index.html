@@ -317,8 +317,9 @@ const GUARANTEE = "Опишите гарантию на телефоны: сро
 const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на новые телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
-// Адрес backend передаёт бот через параметр ?api=...; если его нет, остаётся локальный режим.
-const API_BASE = ""; // Укажите тот же публичный HTTPS-адрес, что и API_BASE_URL в настройках бота.
+// Статусы заказов читаются из JSON-файлов в этом же GitHub Pages.
+// Python-бот на вашем компьютере публикует эти файлы в репозиторий qspots/Upgrader.
+const ORDERS_PUBLIC_BASE = "https://qspots.github.io/Upgrader/orders";
 
 function getUser(){
   let u = tg?.initDataUnsafe?.user;
@@ -341,6 +342,20 @@ function getUser(){
   return saved.id ? saved : {id:0, first_name:"Гость"};
 }
 const user = getUser();
+function getCustomerOrderKey(){
+  if(!user.id) return "";
+  const storageKey = `kzapple_orders_key_${user.id}`;
+  let key = "";
+  try{ key = localStorage.getItem(storageKey) || ""; }catch(e){}
+  if(!/^[a-f0-9]{64}$/.test(key)){
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    key = Array.from(bytes, b=>b.toString(16).padStart(2,"0")).join("");
+    try{ localStorage.setItem(storageKey,key); }catch(e){}
+  }
+  return key;
+}
+const customerOrderKey = getCustomerOrderKey();
 const $ = s => document.querySelector(s);
 const money = n => n.toLocaleString("ru-RU")+" ₸";
 const store = (k,v) => { try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null } };
@@ -380,11 +395,13 @@ function buy(id){
   closeSheet();
   if(!pvz){ pending=id; $("#pvz").click(); return; }
   if(tg?.initDataUnsafe?.query_id) return openSheet("<h2>Откройте через чат</h2><p>Чтобы заказ дошёл до менеджера, откройте магазин кнопкой «Открыть магазин» внизу чата с ботом (команда /start). Эта кнопка рядом с полем ввода нужна для профиля.</p>");
+  if(!user.id || !customerOrderKey || !tg?.sendData) return openSheet("<h2>Откройте магазин через бота</h2><p>Для оформления заказа запустите KzApple кнопкой «Открыть магазин» в Telegram-боте.</p>");
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
   const name = title(p);
-  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, img:p.img||"", stage:"payment", status:"Стадия оплаты", city:pvzFull(pvz), created_at:new Date().toISOString()};
+  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, img:p.img||"", stage:"payment", status:"Стадия оплаты", city:pvzFull(pvz), created_at:new Date().toISOString(), customer_key:customerOrderKey};
   orders.unshift(o); store("orders",orders);
-  try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
+  try{ tg.sendData(JSON.stringify(o)); }
+  catch(e){ openSheet("<h2>Не удалось отправить заказ</h2><p>Откройте магазин через кнопку в чате с ботом и попробуйте ещё раз.</p>"); return; }
   tg?.HapticFeedback?.notificationOccurred("success");
   go("orders");
 }
@@ -427,21 +444,23 @@ function renderOrders(){
       ${screenshot}
     </article>`;
   }).join("");
-  return `<h2>Мои заказы</h2><button class="btn ghost order-refresh" onclick="syncOrders(true)">↻ Обновить статусы</button>${!API_BASE?`<div class="order-sync">Для онлайн-обновления статусов откройте магазин через Telegram после подключения сервера.</div>`:""}${cards}`;
+  return `<h2>Мои заказы</h2><button class="btn ghost order-refresh" onclick="syncOrders(true)">↻ Обновить статусы</button>${!customerOrderKey?`<div class="order-sync">Откройте магазин через Telegram-бота, чтобы видеть свои заказы.</div>`:`<div class="order-sync">Статусы синхронизируются через GitHub. Обновление может занять немного времени после изменения администратором.</div>`}${cards}`;
 }
 
 async function syncOrders(showError=false){
-  if(!API_BASE || !tg?.initData) return;
+  if(!customerOrderKey) return;
   try{
-    const response=await fetch(`${API_BASE}/api/orders`,{headers:{"X-Telegram-Init-Data":tg.initData}});
+    const url=`${ORDERS_PUBLIC_BASE}/${customerOrderKey}.json?v=${Date.now()}`;
+    const response=await fetch(url,{cache:"no-store"});
+    if(response.status===404) return; // файл появится после первой публикации заказа ботом
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
-    if(!Array.isArray(data.orders)) throw new Error("Неверный формат ответа сервера");
+    if(!Array.isArray(data.orders)) throw new Error("Неверный формат файла заказов GitHub");
     orders=data.orders; store("orders",orders);
     if(tab==="orders") { $("#view").innerHTML=renderOrders(); drawNav(); }
   }catch(err){
-    console.warn("Не удалось обновить заказы:",err);
-    if(showError && tab==="orders") openSheet(`<h2>Не удалось обновить</h2><p style="color:var(--mute)">Проверьте подключение к интернету и адрес сервера магазина. Ваши сохранённые заказы не удалены.</p>`);
+    console.warn("Не удалось обновить заказы из GitHub:",err);
+    if(showError && tab==="orders") openSheet(`<h2>Не удалось обновить</h2><p style="color:var(--mute)">Проверьте интернет и доступность GitHub Pages. Локально сохранённые заказы не удалены.</p>`);
   }
 }
 
