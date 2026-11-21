@@ -317,10 +317,6 @@ const GUARANTEE = "Опишите гарантию на телефоны: сро
 const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на новые телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
-// Статусы заказов читаются из JSON-файлов в этом же GitHub Pages.
-// Python-бот на вашем компьютере публикует эти файлы в репозиторий qspots/Upgrader.
-const ORDERS_PUBLIC_BASE = "https://qspots.github.io/Upgrader/orders";
-
 function getUser(){
   let u = tg?.initDataUnsafe?.user;
   if(!u){ try{
@@ -342,20 +338,6 @@ function getUser(){
   return saved.id ? saved : {id:0, first_name:"Гость"};
 }
 const user = getUser();
-function getCustomerOrderKey(){
-  if(!user.id) return "";
-  const storageKey = `kzapple_orders_key_${user.id}`;
-  let key = "";
-  try{ key = localStorage.getItem(storageKey) || ""; }catch(e){}
-  if(!/^[a-f0-9]{64}$/.test(key)){
-    const bytes = new Uint8Array(32);
-    crypto.getRandomValues(bytes);
-    key = Array.from(bytes, b=>b.toString(16).padStart(2,"0")).join("");
-    try{ localStorage.setItem(storageKey,key); }catch(e){}
-  }
-  return key;
-}
-const customerOrderKey = getCustomerOrderKey();
 const $ = s => document.querySelector(s);
 const money = n => n.toLocaleString("ru-RU")+" ₸";
 const store = (k,v) => { try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null } };
@@ -395,10 +377,10 @@ function buy(id){
   closeSheet();
   if(!pvz){ pending=id; $("#pvz").click(); return; }
   if(tg?.initDataUnsafe?.query_id) return openSheet("<h2>Откройте через чат</h2><p>Чтобы заказ дошёл до менеджера, откройте магазин кнопкой «Открыть магазин» внизу чата с ботом (команда /start). Эта кнопка рядом с полем ввода нужна для профиля.</p>");
-  if(!user.id || !customerOrderKey || !tg?.sendData) return openSheet("<h2>Откройте магазин через бота</h2><p>Для оформления заказа запустите KzApple кнопкой «Открыть магазин» в Telegram-боте.</p>");
+  if(!user.id || !tg?.sendData) return openSheet("<h2>Откройте магазин через бота</h2><p>Для оформления заказа запустите KzApple кнопкой «Открыть магазин» в Telegram-боте.</p>");
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
   const name = title(p);
-  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, img:p.img||"", stage:"payment", status:"Стадия оплаты", city:pvzFull(pvz), created_at:new Date().toISOString(), customer_key:customerOrderKey};
+  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, img:p.img||"", stage:"payment", status:"Заказ принят", city:pvzFull(pvz), created_at:new Date().toISOString()};
   orders.unshift(o); store("orders",orders);
   try{ tg.sendData(JSON.stringify(o)); }
   catch(e){ openSheet("<h2>Не удалось отправить заказ</h2><p>Откройте магазин через кнопку в чате с ботом и попробуйте ещё раз.</p>"); return; }
@@ -430,38 +412,17 @@ function stageInfo(stage){
   return map[stage]||map.payment;
 }
 function renderOrders(){
-  if(!orders.length) return `<h2>Мои заказы</h2><div class="note">Заказов пока нет. Выберите iPhone в каталоге — заказ появится здесь.</div>`;
+  if(!orders.length) return `<h2>Мои заказы</h2><div class="note">Заказов пока нет. Выберите iPhone в каталоге — после оформления заказ появится здесь.</div>`;
   const cards=orders.map((o,i)=>{
-    const info=stageInfo(o.stage), active=info.index;
     const image=o.img?`<img src="${esc(o.img)}" alt="${esc(o.name)}" onerror="this.style.display='none'">`:"";
-    const screenshot=o.screenshot_url?`<div><b>📎 Скриншот отправления</b><img class="order-screenshot" src="${esc(o.screenshot_url)}" alt="Скриншот доставки" loading="lazy"></div>`:"";
     const date=o.created_at?new Date(o.created_at).toLocaleString("ru-RU"):"";
     return `<article class="order-card" style="animation-delay:${Math.min(i,8)*45}ms">
       <div class="order-meta"><span>Заказ <b>${esc(o.id)}</b></span><span>${esc(date)}</span></div>
       <div class="order-product">${image}<div class="order-product-info"><b>${esc(o.name)}</b><small>Пункт выдачи: ${esc(o.city||"не указан")}</small></div><div class="price">${money(Number(o.price)||0)}</div></div>
-      <div class="order-progress"><span class="${active>=0?'done':''}"></span><span class="${active>=1?'done':''}"></span><span class="${active>=2?'done':''}"></span></div>
-      <div class="order-status"><b>${info.title}</b><p>${info.text}</p></div>
-      ${screenshot}
+      <div class="order-status"><b>✅ Заказ принят</b><p>Карточка подтверждает оформление заказа. Актуальный этап (оплата, сборка или доставка) бот присылает отдельным сообщением в этот чат Telegram. Скриншоты отправления также приходят сюда.</p></div>
     </article>`;
   }).join("");
-  return `<h2>Мои заказы</h2><button class="btn ghost order-refresh" onclick="syncOrders(true)">↻ Обновить статусы</button>${!customerOrderKey?`<div class="order-sync">Откройте магазин через Telegram-бота, чтобы видеть свои заказы.</div>`:`<div class="order-sync">Статусы синхронизируются через GitHub. Обновление может занять немного времени после изменения администратором.</div>`}${cards}`;
-}
-
-async function syncOrders(showError=false){
-  if(!customerOrderKey) return;
-  try{
-    const url=`${ORDERS_PUBLIC_BASE}/${customerOrderKey}.json?v=${Date.now()}`;
-    const response=await fetch(url,{cache:"no-store"});
-    if(response.status===404) return; // файл появится после первой публикации заказа ботом
-    if(!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data=await response.json();
-    if(!Array.isArray(data.orders)) throw new Error("Неверный формат файла заказов GitHub");
-    orders=data.orders; store("orders",orders);
-    if(tab==="orders") { $("#view").innerHTML=renderOrders(); drawNav(); }
-  }catch(err){
-    console.warn("Не удалось обновить заказы из GitHub:",err);
-    if(showError && tab==="orders") openSheet(`<h2>Не удалось обновить</h2><p style="color:var(--mute)">Проверьте интернет и доступность GitHub Pages. Локально сохранённые заказы не удалены.</p>`);
-  }
+  return `<h2>Мои заказы</h2><div class="order-sync">Следите за сообщениями от KzApple в Telegram: там менеджер обновляет этап заказа и отправляет фотографии доставки.</div>${cards}`;
 }
 
 function reviewColor(name){
@@ -546,7 +507,7 @@ const H_STEPS = [   // тексты можно менять: пишите тол
   {icon:"🛍", t:"Выберите товар", p:"Откройте каталог и выберите модель, память и цвет."},
   {icon:"📍", t:"Укажите ПВЗ Wildberries", p:"Выберите город и укажите адрес пункта выдачи. Если нужного ПВЗ нет в списке, введите адрес вручную."},
   {icon:"💳", t:"Оплатите заказ", p:"Менеджер свяжется с вами в Telegram и согласует оплату и условия сплита. Заказ оформляется на ваш ПВЗ после подтверждения оплаты.",
-   mini:[["Статус","Этапы заказа видны в разделе «Заказы»"],["Связь","Менеджер на связи в Telegram"],["Условия","Все условия согласуются до оплаты"],["Помощь","Поддержка в разделе «Профиль»"]],
+   mini:[["Статус","Актуальный этап приходит сообщением от бота в Telegram"],["Связь","Менеджер на связи в Telegram"],["Условия","Все условия согласуются до оплаты"],["Помощь","Поддержка в разделе «Профиль»"]],
    tip:"<b>Не оплачивайте</b>, пока вам не понятны все условия. Любой вопрос можно задать менеджеру."},
   {icon:"📋", t:"Менеджер оформляет заказ", p:"После оплаты менеджер оформляет заказ на ваш ПВЗ и при необходимости уточняет детали.", tip:"Если менеджер написал — ответьте ему, так заказ оформится быстрее."},
   {icon:"🚚", t:"Следите за статусом", p:"Статус заказа отображается в разделе «Заказы». Если что-то непонятно — напишите в поддержку."},
@@ -573,9 +534,6 @@ function render(){
   drawNav(); drawPvz(); window.scrollTo(0,0);
 }
 render();
-syncOrders();
-// Подтягиваем изменения, которые администратор сделал в Telegram, пока магазин открыт.
-setInterval(()=>syncOrders(false),20000);
 </script>
 </body>
 </html>
