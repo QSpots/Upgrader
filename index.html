@@ -53,6 +53,23 @@ h2{font-size:26px;margin:8px 0 16px}
 .row small{color:var(--mute);display:block}
 .note{border:1px solid var(--a1);border-radius:16px;padding:12px;color:var(--mute);font-size:14px;margin-bottom:14px}
 .rimg{display:block;width:auto;height:auto;max-width:100%;max-height:280px;margin-top:10px;padding:6px;background:var(--bg);border:1px solid var(--a1);border-radius:16px;box-shadow:0 0 14px rgba(0,180,216,.2)}
+.order-card{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:14px;animation:rise .35s both}
+.order-product{display:flex;align-items:center;gap:12px;min-width:0}
+.order-product img{width:76px;height:76px;object-fit:contain;flex:none;background:#eef1f5;border-radius:13px;padding:4px}
+.order-product-info{min-width:0;flex:1}
+.order-product-info b{display:block;font-size:16px;overflow-wrap:anywhere}
+.order-product-info small{color:var(--mute);display:block;margin-top:3px;overflow-wrap:anywhere}
+.order-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--mute);font-size:12px}
+.order-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:3px 0}
+.order-progress span{height:6px;border-radius:8px;background:#263342}
+.order-progress span.done{background:var(--grad);box-shadow:0 0 9px rgba(0,180,216,.25)}
+.order-status{border:1px solid rgba(0,180,216,.35);background:rgba(0,180,216,.07);border-radius:14px;padding:12px}
+.order-status b{display:block;color:var(--a1);font-size:14px;margin-bottom:4px}
+.order-status p{color:var(--mute);font-size:13px;line-height:1.5}
+.order-screenshot{display:block;width:100%;max-height:420px;object-fit:contain;border:1px solid var(--line);border-radius:14px;background:#080d13;margin-top:8px}
+.order-sync{font-size:12px;color:var(--mute);text-align:center;margin:6px 0 12px}
+.order-refresh{margin:0 0 12px}
+
 .review-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;animation:rise .45s both}
 .review-top{display:flex;align-items:flex-start;gap:11px}
 .review-person{display:flex;align-items:center;gap:10px;min-width:0;flex:1;border:0;background:none;color:inherit;text-align:left;padding:0;cursor:pointer}
@@ -300,6 +317,9 @@ const GUARANTEE = "Опишите гарантию на телефоны: сро
 const FAQ = [["Как оплатить?","Опишите способы оплаты."],["Сколько идёт доставка?","Укажите сроки по городам и странам СНГ."],["Есть ли гарантия?","Опишите гарантию на новые телефоны."]];
 
 const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
+// Адрес backend передаёт бот через параметр ?api=...; если его нет, остаётся локальный режим.
+const API_BASE = ""; // Укажите тот же публичный HTTPS-адрес, что и API_BASE_URL в настройках бота.
+
 function getUser(){
   let u = tg?.initDataUnsafe?.user;
   if(!u){ try{
@@ -362,7 +382,7 @@ function buy(id){
   if(tg?.initDataUnsafe?.query_id) return openSheet("<h2>Откройте через чат</h2><p>Чтобы заказ дошёл до менеджера, откройте магазин кнопкой «Открыть магазин» внизу чата с ботом (команда /start). Эта кнопка рядом с полем ввода нужна для профиля.</p>");
   const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
   const name = title(p);
-  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, status:"Ожидает подтверждения", city:pvzFull(pvz)};
+  const o = {id:"A-"+Math.floor(100000+Math.random()*900000), name, price:p.price, img:p.img||"", stage:"payment", status:"Стадия оплаты", city:pvzFull(pvz), created_at:new Date().toISOString()};
   orders.unshift(o); store("orders",orders);
   try{ tg?.sendData(JSON.stringify(o)); }catch(e){}
   tg?.HapticFeedback?.notificationOccurred("success");
@@ -384,10 +404,47 @@ function renderCatalog(){
   const cards = shown.map((p,i)=>`<div class="pc" style="--i:${Math.min(i,8)}"><div class="pic">${p.img?`<img src="${p.img}" alt="" onerror="imgErr(this,'${p.img}')">`:"📱"}</div><b>${p.model}</b><small>${p.mem} · ${p.color}</small><div class="old">${p.old?money(p.old):"&nbsp;"}</div><div class="price">${money(p.price)}</div><button class="btn" onclick="choose('${p.id}')">Выбрать</button></div>`).join("");
   return hero + `<div class="sec" id="cat">Каталог</div>` + chips + (cards ? `<div class="grid">${cards}</div>` : `<div class="note">Сейчас нет телефонов в наличии. Загляните позже.</div>`);
 }
-function renderOrders(){
-  if(!orders.length) return `<h2>История заказов</h2><div class="note">Заказов пока нет.</div>`;
-  return `<h2>История заказов</h2>`+orders.map((o,i)=>`<div class="row" style="--i:${Math.min(i,8)}"><div><b>${o.id}</b><br>${o.name}<small>Пункт выдачи: ${esc(o.city)}</small><span class="badge">${o.status}</span></div><div class="price">${money(o.price)}</div></div>`).join("");
+function stageInfo(stage){
+  const map={
+    payment:{index:0,title:"Стадия оплаты",text:"Обратитесь к менеджеру для согласования и оплаты заказа."},
+    assembling:{index:1,title:"Товар оплачен — в стадии сборки",text:"Оплата подтверждена. Ваш заказ готовят к отправке."},
+    shipping:{index:2,title:"Товар едет к вам",text:"Заказ передан в доставку. Ниже администратор может добавить скриншот отправления."}
+  };
+  return map[stage]||map.payment;
 }
+function renderOrders(){
+  if(!orders.length) return `<h2>Мои заказы</h2><div class="note">Заказов пока нет. Выберите iPhone в каталоге — заказ появится здесь.</div>`;
+  const cards=orders.map((o,i)=>{
+    const info=stageInfo(o.stage), active=info.index;
+    const image=o.img?`<img src="${esc(o.img)}" alt="${esc(o.name)}" onerror="this.style.display='none'">`:"";
+    const screenshot=o.screenshot_url?`<div><b>📎 Скриншот отправления</b><img class="order-screenshot" src="${esc(o.screenshot_url)}" alt="Скриншот доставки" loading="lazy"></div>`:"";
+    const date=o.created_at?new Date(o.created_at).toLocaleString("ru-RU"):"";
+    return `<article class="order-card" style="animation-delay:${Math.min(i,8)*45}ms">
+      <div class="order-meta"><span>Заказ <b>${esc(o.id)}</b></span><span>${esc(date)}</span></div>
+      <div class="order-product">${image}<div class="order-product-info"><b>${esc(o.name)}</b><small>Пункт выдачи: ${esc(o.city||"не указан")}</small></div><div class="price">${money(Number(o.price)||0)}</div></div>
+      <div class="order-progress"><span class="${active>=0?'done':''}"></span><span class="${active>=1?'done':''}"></span><span class="${active>=2?'done':''}"></span></div>
+      <div class="order-status"><b>${info.title}</b><p>${info.text}</p></div>
+      ${screenshot}
+    </article>`;
+  }).join("");
+  return `<h2>Мои заказы</h2><button class="btn ghost order-refresh" onclick="syncOrders(true)">↻ Обновить статусы</button>${!API_BASE?`<div class="order-sync">Для онлайн-обновления статусов откройте магазин через Telegram после подключения сервера.</div>`:""}${cards}`;
+}
+
+async function syncOrders(showError=false){
+  if(!API_BASE || !tg?.initData) return;
+  try{
+    const response=await fetch(`${API_BASE}/api/orders`,{headers:{"X-Telegram-Init-Data":tg.initData}});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    if(!Array.isArray(data.orders)) throw new Error("Неверный формат ответа сервера");
+    orders=data.orders; store("orders",orders);
+    if(tab==="orders") { $("#view").innerHTML=renderOrders(); drawNav(); }
+  }catch(err){
+    console.warn("Не удалось обновить заказы:",err);
+    if(showError && tab==="orders") openSheet(`<h2>Не удалось обновить</h2><p style="color:var(--mute)">Проверьте подключение к интернету и адрес сервера магазина. Ваши сохранённые заказы не удалены.</p>`);
+  }
+}
+
 function reviewColor(name){
   const palette=["#8056d9","#087f75","#3769bd","#b05c83","#a36b32","#5865a8","#39805a"];
   let hash=0; for(const ch of String(name)) hash=(hash*31+ch.charCodeAt(0))|0;
@@ -497,6 +554,9 @@ function render(){
   drawNav(); drawPvz(); window.scrollTo(0,0);
 }
 render();
+syncOrders();
+// Подтягиваем изменения, которые администратор сделал в Telegram, пока магазин открыт.
+setInterval(()=>syncOrders(false),20000);
 </script>
 </body>
 </html>
