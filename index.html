@@ -419,10 +419,10 @@ function renderOrders(){
     return `<article class="order-card" style="animation-delay:${Math.min(i,8)*45}ms">
       <div class="order-meta"><span>Заказ <b>${esc(o.id)}</b></span><span>${esc(date)}</span></div>
       <div class="order-product">${image}<div class="order-product-info"><b>${esc(o.name)}</b><small>Пункт выдачи: ${esc(o.city||"не указан")}</small></div><div class="price">${money(Number(o.price)||0)}</div></div>
-      <div class="order-status"><b>✅ Заказ принят</b><p>Карточка подтверждает оформление заказа. Актуальный этап (оплата, сборка или доставка) бот присылает отдельным сообщением в этот чат Telegram. Скриншоты отправления также приходят сюда.</p></div>
+      <div class="order-status"><b>✅ Заказ оформлен</b><p>Статус и фото доставки придут сообщением от KzApple в Telegram.</p></div>
     </article>`;
   }).join("");
-  return `<h2>Мои заказы</h2><div class="order-sync">Следите за сообщениями от KzApple в Telegram: там менеджер обновляет этап заказа и отправляет фотографии доставки.</div>${cards}`;
+  return `<h2>Мои заказы</h2><div class="order-sync">Все обновления — в чате KzApple.</div>${cards}`;
 }
 
 function reviewColor(name){
